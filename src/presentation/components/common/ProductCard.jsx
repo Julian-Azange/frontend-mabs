@@ -2,7 +2,7 @@ import { Card, CardMedia, Typography, Box, Chip, Button, useTheme, Fade, alpha }
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, onAddToCart }) {
     const theme = useTheme();
     const [isHovered, setIsHovered] = useState(false);
     const [isSwatchHovered, setIsSwatchHovered] = useState(false);
@@ -14,9 +14,9 @@ export default function ProductCard({ product }) {
 
     const handleAddToCart = (e) => {
         e.stopPropagation()
-        console.log('Add to cart:', product.id)
-        // TODO: Implementar lógica de agregar al carrito
-        // Ejemplo: agregarItem(product)
+        if (typeof onAddToCart === 'function') {
+            onAddToCart(product)
+        }
     }
 
     const handleQuickView = (e) => {

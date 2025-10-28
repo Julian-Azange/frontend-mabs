@@ -10,6 +10,7 @@ import Productos from '../../presentation/pages/productos/Productos'
 import DetalleProducto from '../../presentation/pages/producto/DetalleProducto'
 import Carrito from '../../presentation/pages/carrito/Carrito'
 import Checkout from '../../presentation/pages/checkout/Checkout'
+import Perfil from '../../presentation/pages/perfil/Perfil'
 
 // Auth Pages
 import Login from '../../presentation/pages/login/Login'
@@ -26,6 +27,7 @@ export default function LayoutRoutes() {
                 <Route path="producto/:id" element={<DetalleProducto />} />
                 <Route path="carrito" element={<Carrito />} />
                 <Route path="checkout" element={<Checkout />} />
+                <Route path="perfil" element={<Perfil />} />
             </Route>
 
             {/* Rutas de Autenticación en pantalla completa */}

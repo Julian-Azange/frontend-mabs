@@ -5,6 +5,8 @@ import CategoryCard from '../../components/common/CategoryCard'
 import ProductCard from '../../components/common/ProductCard'
 import AffiliateBanner from '../../components/affiliate/AffiliateBanner'
 import { useState } from 'react'
+import { useCart } from '../../../app/providers/CartProvider'
+import { toast } from 'react-toastify'
 import AboutUs from '../../components/about/AboutUs'
 
 // Categorías de belleza y maquillaje
@@ -104,6 +106,13 @@ export default function Home() {
         (flashDealIndex + 1) * productsPerView
     )
 
+    const { addToCart } = useCart()
+
+    const handleAddToCart = (product) => {
+        addToCart(product, 1)
+        toast.success(`${product.name} agregado al carrito`)
+    }
+
     return (
         <>
             <HeroBanner />
@@ -163,7 +172,7 @@ export default function Home() {
                         }}
                     >
                         {visibleFlashDeals.map((product) => (
-                            <ProductCard key={product.id} product={product} />
+                            <ProductCard key={product.id} product={product} onAddToCart={() => handleAddToCart(product)} />
                         ))}
                     </Box>
                 </Box>

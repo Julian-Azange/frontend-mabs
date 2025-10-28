@@ -29,6 +29,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider"; // Hook de autenticación
 import { useCart } from "../../../app/providers/CartProvider"; // Hook del carrito
+import Swal from 'sweetalert2'
+import { toast } from 'react-toastify'
 
 // Ruta del logo
 const LOGO_URL = "/assets/logo.png";
@@ -81,8 +83,8 @@ export default function Navbar() {
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             PaperProps={{
-                sx: { 
-                    width: 380, 
+                sx: {
+                    width: 380,
                     mt: 1.5,
                     boxShadow: '0 4px 24px rgba(0,0,0,0.15)',
                     borderRadius: 2,
@@ -104,12 +106,28 @@ export default function Navbar() {
                                 primaryTypographyProps={{ fontWeight: 600, fontSize: '0.9rem' }}
                             />
                             <Typography sx={{ mx: 2, fontWeight: 600 }}>${(item.price * item.quantity).toFixed(2)}</Typography>
-                            <IconButton size="small" onClick={() => removeFromCart(item.id, item.color?.pantone)}>
+                            <IconButton size="small" onClick={async () => {
+                                const result = await Swal.fire({
+                                    title: '¿Eliminar producto?',
+                                    text: `¿Deseas eliminar ${item.name} del carrito?`,
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Sí, eliminar',
+                                    cancelButtonText: 'Cancelar'
+                                })
+
+                                if (result.isConfirmed) {
+                                    removeFromCart(item.id, item.color?.pantone)
+                                    toast.success('Producto eliminado del carrito')
+                                }
+                            }}>
                                 <DeleteOutline fontSize="small" />
                             </IconButton>
                         </MenuItem>
                     )),
-                    <Divider key="divider"/>,
+                    <Divider key="divider" />,
                     <Box key="total" sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography variant="h6" fontWeight={600}>Total:</Typography>
                         <Typography variant="h6" fontWeight={700}>${cartTotal.toFixed(2)}</Typography>
@@ -131,9 +149,26 @@ export default function Navbar() {
                 </Badge>
             </IconButton>
             {user ? (
-                <Button variant="outlined" startIcon={<Person />} onClick={logout}>Cerrar Sesión</Button>
+                <IconButton
+                    onClick={() => navigate("/perfil")}
+                    sx={{
+                        border: `1px solid ${theme.palette.divider}`,
+                        borderRadius: 2,
+                        ml: 1
+                    }}
+                >
+                    <Person />
+                </IconButton>
             ) : (
-                <IconButton onClick={() => navigate("/login")} sx={{ border: `1px solid ${theme.palette.divider}`, borderRadius: 2, padding: "8px" }}>
+                <IconButton
+                    onClick={() => navigate("/login")}
+                    sx={{
+                        border: `1px solid ${theme.palette.divider}`,
+                        borderRadius: 2,
+                        padding: "8px",
+                        ml: 1
+                    }}
+                >
                     <Person />
                 </IconButton>
             )}
@@ -155,7 +190,7 @@ export default function Navbar() {
                 <Container maxWidth="xl">
                     <Toolbar sx={{ minHeight: { xs: 70, md: 80 }, py: { xs: 1, md: 0 } }}>
                         <Box component="img" src={LOGO_URL} alt="Mabs Logo" sx={{ height: { xs: 30, md: 40 }, cursor: "pointer" }} onClick={() => navigate("/")} />
-                        
+
                         {!isMobile && (
                             <Box sx={{ display: "flex", flexGrow: 1, justifyContent: "center" }}>
                                 {menuItems.map((item) => (
