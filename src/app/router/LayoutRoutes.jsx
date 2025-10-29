@@ -1,4 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useAuth } from '../providers/AuthProvider'
+import { getAuthorizedRoutes } from '../services/routeService'
 
 import PublicLayout from '../../presentation/layouts/PublicLayout'
 import AuthLayout from '../../presentation/layouts/AuthLayout'
@@ -17,8 +20,75 @@ import ConfiguracionAdmin from '../../presentation/pages/admin/Configuracion'
 import Login from '../../presentation/pages/login/Login'
 import Registro from '../../presentation/pages/registro/Registro'
 import RecuperarContrasena from '../../presentation/pages/recuperar-contrasena/RecuperarContrasena'
+import Contacto from '../../presentation/pages/contacto/Contacto'
+
+const componentMap = {
+    Home,
+    Productos,
+    DetalleProducto,
+    Carrito,
+    Checkout,
+    Perfil,
+    Login,
+    Registro,
+    RecuperarContrasena,
+    DashboardAdmin,
+    GestionProductos,
+    GestionUsuarios,
+    PedidosAdmin,
+    ConfiguracionAdmin,
+    Contacto
+}
 
 export default function LayoutRoutes() {
+    const [authorizedRoutes, setAuthorizedRoutes] = useState(null)
+    const { user } = useAuth()
+
+    useEffect(() => {
+        const loadRoutes = async () => {
+            try {
+                const routes = await getAuthorizedRoutes()
+                setAuthorizedRoutes(routes)
+            } catch (error) {
+                console.error('Error cargando rutas:', error)
+            }
+        }
+
+        if (user) {
+            loadRoutes()
+        }
+    }, [user])
+
+    if (!authorizedRoutes && user) {
+        return <div>Cargando rutas...</div>
+    }
+
+    const renderRoutes = (routes) => {
+        return routes.map((route) => {
+            const Component = componentMap[route.component]
+            if (!Component) {
+                console.warn(`Componente no encontrado: ${route.component}`)
+                return null
+            }
+
+            if (route.children) {
+                return (
+                    <Route key={route.path} path={route.path} element={<Component />}>
+                        {renderRoutes(route.children)}
+                    </Route>
+                )
+            }
+
+            return (
+                <Route
+                    key={route.path}
+                    path={route.path}
+                    element={<Component />}
+                />
+            )
+        })
+    }
+
     return (
         <Routes>
             <Route element={<PublicLayout />}>
@@ -27,7 +97,8 @@ export default function LayoutRoutes() {
                 <Route path="producto/:id" element={<DetalleProducto />} />
                 <Route path="carrito" element={<Carrito />} />
                 <Route path="checkout" element={<Checkout />} />
-                <Route path="perfil" element={<Perfil />} />
+                <Route path="contacto" element={<Contacto />} />
+                {user && <Route path="perfil" element={<Perfil />} />}
             </Route>
 
             <Route element={<AuthLayout />}>
@@ -36,13 +107,11 @@ export default function LayoutRoutes() {
                 <Route path="recuperar-contrasena" element={<RecuperarContrasena />} />
             </Route>
 
-            <Route path="/admin" element={<AdminLayout />}>
-                <Route path="dashboard" element={<DashboardAdmin />} />
-                <Route path="productos" element={<GestionProductos />} />
-                <Route path="usuarios" element={<GestionUsuarios />} />
-                <Route path="pedidos" element={<PedidosAdmin />} />
-                <Route path="configuracion" element={<ConfiguracionAdmin />} />
-            </Route>
+            {user && authorizedRoutes?.adminRoutes && (
+                <Route path="/admin" element={<AdminLayout />}>
+                    {renderRoutes(authorizedRoutes.adminRoutes)}
+                </Route>
+            )}
         </Routes>
     )
 }
