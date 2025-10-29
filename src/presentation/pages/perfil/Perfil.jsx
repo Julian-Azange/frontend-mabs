@@ -79,6 +79,13 @@ export default function Perfil() {
     const [openPasswordDialog, setOpenPasswordDialog] = useState(false)
     const [openBankDialog, setOpenBankDialog] = useState(false)
     const [openAddressDialog, setOpenAddressDialog] = useState(false)
+    // nuevos estados para edición
+    const [openEditName, setOpenEditName] = useState(false)
+    const [openEditPhone, setOpenEditPhone] = useState(false)
+    const [openEditAddress, setOpenEditAddress] = useState(false)
+    const [editAddressData, setEditAddressData] = useState(null)
+    const [nameValue, setNameValue] = useState(user?.name || '')
+    const [phoneValue, setPhoneValue] = useState(user?.phone || '')
 
     if (!user) {
         navigate('/login')
@@ -178,6 +185,13 @@ export default function Perfil() {
                 </Box>
             </Box>
 
+            {/* Botón principal de cerrar sesión */}
+            <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end' }}>
+                <Button variant="outlined" color="error" onClick={handleLogout}>
+                    Cerrar Sesión
+                </Button>
+            </Box>
+
             <Divider sx={{ my: 3 }} />
 
             <Grid container spacing={3}>
@@ -191,7 +205,7 @@ export default function Perfil() {
                                 primary="Nombre Completo"
                                 secondary={user.name}
                             />
-                            <IconButton size="small">
+                            <IconButton size="small" onClick={() => setOpenEditName(true)}>
                                 <Edit fontSize="small" />
                             </IconButton>
                         </ListItem>
@@ -212,7 +226,7 @@ export default function Perfil() {
                                 primary="Teléfono"
                                 secondary={user.phone || "No configurado"}
                             />
-                            <IconButton size="small">
+                            <IconButton size="small" onClick={() => setOpenEditPhone(true)}>
                                 <Edit fontSize="small" />
                             </IconButton>
                         </ListItem>
@@ -238,7 +252,7 @@ export default function Perfil() {
                                 <Typography variant="subtitle2" color="primary">
                                     {address.type}
                                 </Typography>
-                                <IconButton size="small">
+                                <IconButton size="small" onClick={() => { setEditAddressData(address); setOpenEditAddress(true); }}>
                                     <Edit fontSize="small" />
                                 </IconButton>
                             </Box>
@@ -399,6 +413,95 @@ export default function Perfil() {
                         />
                     </Button>
                 </DialogContent>
+            </Dialog>
+
+            {/* Diálogo para editar nombre */}
+            <Dialog open={openEditName} onClose={() => setOpenEditName(false)}>
+                <DialogTitle>Editar Nombre</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        margin="dense"
+                        label="Nombre Completo"
+                        fullWidth
+                        variant="outlined"
+                        value={nameValue}
+                        onChange={e => setNameValue(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenEditName(false)}>Cancelar</Button>
+                    <Button onClick={() => { toast.success('Nombre actualizado'); setOpenEditName(false); }} variant="contained">Actualizar</Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Diálogo para editar teléfono */}
+            <Dialog open={openEditPhone} onClose={() => setOpenEditPhone(false)}>
+                <DialogTitle>Editar Teléfono</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        margin="dense"
+                        label="Teléfono"
+                        fullWidth
+                        variant="outlined"
+                        value={phoneValue}
+                        onChange={e => setPhoneValue(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenEditPhone(false)}>Cancelar</Button>
+                    <Button onClick={() => { toast.success('Teléfono actualizado'); setOpenEditPhone(false); }} variant="contained">Actualizar</Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Diálogo para editar dirección */}
+            <Dialog open={openEditAddress} onClose={() => setOpenEditAddress(false)}>
+                <DialogTitle>Editar Dirección</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        margin="dense"
+                        label="Tipo de Dirección"
+                        fullWidth
+                        variant="outlined"
+                        value={editAddressData?.type || ''}
+                        onChange={e => setEditAddressData({ ...editAddressData, type: e.target.value })}
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Calle y Número"
+                        fullWidth
+                        variant="outlined"
+                        value={editAddressData?.street || ''}
+                        onChange={e => setEditAddressData({ ...editAddressData, street: e.target.value })}
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Ciudad"
+                        fullWidth
+                        variant="outlined"
+                        value={editAddressData?.city || ''}
+                        onChange={e => setEditAddressData({ ...editAddressData, city: e.target.value })}
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Estado"
+                        fullWidth
+                        variant="outlined"
+                        value={editAddressData?.state || ''}
+                        onChange={e => setEditAddressData({ ...editAddressData, state: e.target.value })}
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Código Postal"
+                        fullWidth
+                        variant="outlined"
+                        value={editAddressData?.zipCode || ''}
+                        onChange={e => setEditAddressData({ ...editAddressData, zipCode: e.target.value })}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenEditAddress(false)}>Cancelar</Button>
+                    <Button onClick={() => { toast.success('Dirección actualizada'); setOpenEditAddress(false); }} variant="contained">Actualizar</Button>
+                </DialogActions>
             </Dialog>
 
             {/* Diálogo para cambiar contraseña */}

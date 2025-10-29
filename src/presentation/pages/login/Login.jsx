@@ -28,23 +28,30 @@ export default function Login() {
     });
 
     const onSubmit = (data) => {
-        // Lógica de login temporal
+        // Lógica de login temporal con roles
         if (data.emailOrUsername === 'admin' && data.password === 'admin') {
-            console.log('Login exitoso como admin');
-            // Simular datos de usuario y llamar a la función de login del contexto
-            login({ name: 'Admin User', email: 'admin@mabs.com' });
-            navigate('/'); // Redirigir al home después del login
-        } else {
-            // Si las credenciales son incorrectas, mostrar un error
-            setError('emailOrUsername', {
-                type: 'manual',
-                message: 'Credenciales incorrectas'
-            });
-            setError('password', {
-                type: 'manual',
-                message: 'Credenciales incorrectas'
-            });
+            // Usuario administrador
+            login({ name: 'Admin User', email: 'admin@mabs.com', role: 'admin' });
+            navigate('/admin/dashboard');
+            return
         }
+
+        if (data.emailOrUsername === 'cliente' && data.password === 'cliente') {
+            // Usuario cliente
+            login({ name: 'Cliente Demo', email: 'cliente@example.com', role: 'cliente' });
+            navigate('/');
+            return
+        }
+
+        // Si las credenciales son incorrectas, mostrar un error
+        setError('emailOrUsername', {
+            type: 'manual',
+            message: 'Credenciales incorrectas'
+        });
+        setError('password', {
+            type: 'manual',
+            message: 'Credenciales incorrectas'
+        });
     };
 
     return (
@@ -59,7 +66,7 @@ export default function Login() {
                 />
 
                 {/* Títulos */}
-                <Typography variant="h4" component="h1" sx={{ fontWeight: 700, mb: 1, textAlign: 'center'}}>
+                <Typography variant="h4" component="h1" sx={{ fontWeight: 700, mb: 1, textAlign: 'center' }}>
                     Bienvenido/a de vuelta
                 </Typography>
                 <Typography variant="body1" color="text.secondary" sx={{ mb: 4, textAlign: 'center' }}>
