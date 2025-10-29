@@ -9,7 +9,7 @@ import { useCart } from '../../../app/providers/CartProvider'
 import { toast } from 'react-toastify'
 import AboutUs from '../../components/about/AboutUs'
 
-// Categorías de belleza y maquillaje
+
 const categories = [
     {
         id: 1,
@@ -38,7 +38,6 @@ const categories = [
     },
 ]
 
-// Productos Flash Deals
 const flashDeals = [
     {
         id: 1,
@@ -49,7 +48,7 @@ const flashDeals = [
         discount: 25,
         image: '/assets/images/products/product1.png',
         category: 'MAQUILLAJE',
-        color: '#E6A4B4', // Color de ejemplo
+        color: '#E6A4B4',
     },
     {
         id: 2,
@@ -60,7 +59,7 @@ const flashDeals = [
         discount: 15,
         image: '/assets/images/products/product2.png',
         category: 'LABIALES',
-        color: '#C43670', // Color de ejemplo
+        color: '#C43670',
     },
     {
         id: 3,
@@ -71,7 +70,7 @@ const flashDeals = [
         discount: 22,
         image: '/assets/images/products/product3.png',
         category: 'BASE',
-        color: '#F5D7DB', // Color de ejemplo
+        color: '#F5D7DB',
     },
     {
         id: 4,
@@ -82,8 +81,7 @@ const flashDeals = [
         discount: 38,
         image: '/assets/images/products/product4.png',
         category: 'ACCESORIOS',
-        color: '#fd304bff', // Color de ejemplo
-        // Sin color para mostrar que es opcional
+        color: '#fd304bff',
     }
 ]
 
@@ -131,7 +129,7 @@ export default function Home() {
                             Productos Destacados
                         </Typography>
 
-                        {/* Navigation Arrows */}
+
                         <Box sx={{ display: 'flex', gap: 1 }}>
                             <IconButton
                                 onClick={prevFlashDeals}

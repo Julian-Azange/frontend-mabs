@@ -18,14 +18,12 @@ export default function CartProvider({ children }) {
             const existingItem = prevItems.find(item => item.id === product.id && item.color?.pantone === product.color?.pantone);
 
             if (existingItem) {
-                // Si el item ya existe (mismo id y color), actualiza la cantidad
                 return prevItems.map(item =>
                     item.id === product.id && item.color?.pantone === product.color?.pantone
                         ? { ...item, quantity: item.quantity + quantity }
                         : item
                 );
             } else {
-                // Si es un item nuevo, lo agrega al carrito
                 return [...prevItems, { ...product, quantity }];
             }
         });
@@ -33,7 +31,7 @@ export default function CartProvider({ children }) {
     };
 
     const removeFromCart = (productId, colorPantone) => {
-        setCartItems(prevItems => 
+        setCartItems(prevItems =>
             prevItems.filter(item => !(item.id === productId && item.color?.pantone === colorPantone))
         );
     };
@@ -56,13 +54,12 @@ export default function CartProvider({ children }) {
         setCartItems([]);
     };
 
-    // Usamos useMemo para optimizar y no recalcular en cada render
-    const cartTotal = useMemo(() => 
+    const cartTotal = useMemo(() =>
         cartItems.reduce((total, item) => total + (item.price * item.quantity), 0),
         [cartItems]
     );
 
-    const totalItems = useMemo(() => 
+    const totalItems = useMemo(() =>
         cartItems.reduce((total, item) => total + item.quantity, 0),
         [cartItems]
     );

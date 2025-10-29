@@ -41,17 +41,16 @@ export default function AboutUs() {
                         display: 'grid',
                         gridTemplateColumns: {
                             xs: '1fr',
-                            md: 'repeat(12, 1fr)' // Creamos un grid de 12 columnas
+                            md: 'repeat(12, 1fr)'
                         },
                         gap: { xs: 4, md: 8 },
-                        alignItems: 'center', // Centramos verticalmente los items
+                        alignItems: 'center',
                     }}
                 >
-                    {/* --- SECCIÓN DE IMAGEN --- */}
                     <Box
                         sx={{
-                            gridColumn: { xs: 'auto', md: 'span 4' }, // Ocupa 4 de 12 columnas en md
-                            order: { xs: 1, md: 2 }, // Orden en mobile y desktop
+                            gridColumn: { xs: 'auto', md: 'span 4' },
+                            order: { xs: 1, md: 2 },
                             display: 'flex',
                             justifyContent: 'center',
                         }}
@@ -65,7 +64,6 @@ export default function AboutUs() {
                                 height: { xs: 350, sm: 550 },
                                 maxWidth: 400,
                                 backgroundColor: 'white',
-                                // border: `1px solid ${theme.palette.grey[100]}`,
                             }}
                         >
                             <Box
@@ -123,7 +121,6 @@ export default function AboutUs() {
                             {TEXTO_DESCRIPCION}
                         </Typography>
 
-                        {/* Puntos clave sigue usando Grid porque es un layout anidado y simple */}
                         <Grid container spacing={{ xs: 1, sm: 2 }}>
                             {PUNTOS_CLAVE.map((punto, index) => (
                                 <Grid item xs={12} sm={6} key={index}>

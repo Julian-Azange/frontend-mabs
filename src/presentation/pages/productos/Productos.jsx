@@ -68,7 +68,7 @@ const allProducts = [
         image: '/assets/images/products/product4.png',
         category: 'cuidado-facial',
     },
-    // Adding more products for pagination demo
+
     ...Array.from({ length: 16 }, (_, i) => ({
         id: i + 9,
         name: `Producto ${i + 9}`,
@@ -87,18 +87,18 @@ export default function Productos() {
     const [page, setPage] = useState(1)
     const productsPerPage = 12
 
-    // Filtrar y ordenar productos
+
     const filteredAndSortedProducts = useMemo(() => {
         let filtered = [...allProducts]
 
-        // Filtrar por categoría
+
         if (selectedCategory !== 'Todos') {
             filtered = filtered.filter(product =>
                 product.category.toLowerCase() === selectedCategory.toLowerCase()
             )
         }
 
-        // Ordenar productos
+
         switch (sortBy) {
             case 'price-asc':
                 filtered.sort((a, b) => a.price - b.price)
@@ -119,24 +119,24 @@ export default function Productos() {
         return filtered
     }, [selectedCategory, sortBy])
 
-    // Calcular productos para la página actual
+
     const currentProducts = useMemo(() => {
         const startIndex = (page - 1) * productsPerPage
         return filteredAndSortedProducts.slice(startIndex, startIndex + productsPerPage)
     }, [page, filteredAndSortedProducts])
 
-    // Calcular total de páginas
+
     const totalPages = Math.ceil(filteredAndSortedProducts.length / productsPerPage)
 
-    // Manejadores de eventos
+
     const handleCategoryChange = (category) => {
         setSelectedCategory(category)
-        setPage(1) // Reset page when changing category
+        setPage(1)
     }
 
     const handleSortChange = (event) => {
         setSortBy(event.target.value)
-        setPage(1) // Reset page when changing sort
+        setPage(1)
     }
 
     const handlePageChange = (event, value) => {
@@ -145,7 +145,7 @@ export default function Productos() {
     }
 
     const handleAddToCart = (product) => {
-        addToCart(product, 1) // Agregar 1 unidad por defecto
+        addToCart(product, 1)
     }
 
     return (

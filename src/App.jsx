@@ -10,7 +10,7 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <CartProvider> { /* Envolver con CartProvider */}
+        <CartProvider>
           <BrowserRouter>
             <LayoutRoutes />
           </BrowserRouter>

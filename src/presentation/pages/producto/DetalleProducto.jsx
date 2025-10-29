@@ -1,11 +1,8 @@
 import { useState } from 'react';
 import { Container, Grid, Box, Typography, Button, Divider, Rating, IconButton, Chip, useTheme } from '@mui/material';
 import { ShoppingCart, FavoriteBorder, Add, Remove, Check } from '@mui/icons-material';
-// import { useParams } from 'react-router-dom';
-import ProductCard from '../../components/common/ProductCard'; // Para productos relacionados
-import { useCart } from '../../../app/providers/CartProvider'; // Importar el hook del carrito
-
-// --- MOCKUP DE DATOS DEL PRODUCTO DE MAQUILLAJE ---
+import ProductCard from '../../components/common/ProductCard';
+import { useCart } from '../../../app/providers/CartProvider';
 const product = {
     id: 1,
     name: 'Base Fluida Hidratante',
@@ -35,7 +32,6 @@ const product = {
     ],
 };
 
-// Mockup para productos relacionados
 const relatedProducts = [
     { id: 2, name: 'Labial Hidratante', price: 14.99, image: '/assets/images/products/product2.png', color: '#C43670' },
     { id: 4, name: 'Set de Brochas Premium', price: 49.99, image: '/assets/images/products/product4.png' },
@@ -43,23 +39,23 @@ const relatedProducts = [
 ];
 
 export default function DetalleProducto() {
-    // const { id } = useParams();
-    const { addToCart } = useCart(); // Obtener la función del contexto
+
+    const { addToCart } = useCart();
     const [selectedImage, setSelectedImage] = useState(product.images[0]);
     const [selectedColor, setSelectedColor] = useState(product.colors[0]);
     const [quantity, setQuantity] = useState(1);
-    const [isAdded, setIsAdded] = useState(false); // Estado para la confirmación visual
+    const [isAdded, setIsAdded] = useState(false);
     const theme = useTheme();
 
     const handleAddToCart = () => {
         const productToAdd = {
             ...product,
-            color: selectedColor, // Asegurarse de que el color seleccionado se añade
-            image: selectedImage, // Usar la imagen principal seleccionada
+            color: selectedColor,
+            image: selectedImage,
         };
         addToCart(productToAdd, quantity);
         setIsAdded(true);
-        // Resetear el botón después de 2 segundos
+
         setTimeout(() => {
             setIsAdded(false);
         }, 2000);
@@ -68,7 +64,7 @@ export default function DetalleProducto() {
     return (
         <Box sx={{ py: { xs: 4, md: 8 }, backgroundColor: theme.palette.background.default }}>
             <Container maxWidth="xl">
-                {/* --- SECCIÓN PRINCIPAL DEL PRODUCTO --- */}
+
                 <Box
                     sx={{
                         display: 'grid',
@@ -79,15 +75,15 @@ export default function DetalleProducto() {
                         borderRadius: 1,
                     }}
                 >
-                    {/* COLUMNA IZQUIERDA: GALERÍA DE IMÁGENES */}
+
                     <Box>
-                        <Box sx={{ 
-                            width: '100%', 
-                            height: { xs: 300, sm: 400, md: 500 }, 
-                            borderRadius: 1, 
-                            overflow: 'hidden', 
-                            mb: 2, 
-                            backgroundColor: 'grey.100' 
+                        <Box sx={{
+                            width: '100%',
+                            height: { xs: 300, sm: 400, md: 500 },
+                            borderRadius: 1,
+                            overflow: 'hidden',
+                            mb: 2,
+                            backgroundColor: 'grey.100'
                         }}>
                             <Box
                                 component="img"
@@ -96,10 +92,10 @@ export default function DetalleProducto() {
                                 sx={{
                                     width: '100%',
                                     height: '100%',
-                                    objectFit: 'contain', // Imagen completa y centrada
+                                    objectFit: 'contain',
                                     transition: 'transform 0.4s ease',
                                     '&:hover': {
-                                        transform: 'scale(1.1)', // Efecto de zoom
+                                        transform: 'scale(1.1)',
                                     },
                                 }}
                             />
@@ -127,7 +123,7 @@ export default function DetalleProducto() {
                         </Grid>
                     </Box>
 
-                    {/* COLUMNA DERECHA: INFORMACIÓN DEL PRODUCTO */}
+
                     <Box>
                         <Chip label={product.brand} size="small" sx={{ mb: 1 }} />
                         <Typography variant="h3" component="h1" fontWeight={700} gutterBottom>
@@ -143,7 +139,7 @@ export default function DetalleProducto() {
 
                         <Divider sx={{ my: 2 }} />
 
-                        {/* SELECCIÓN DE COLOR */}
+
                         <Box sx={{ mb: 3 }}>
                             <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
                                 Tono: <Typography component="span" color="text.secondary">{selectedColor.name} - {selectedColor.pantone}</Typography>
@@ -172,7 +168,7 @@ export default function DetalleProducto() {
                             </Box>
                         </Box>
 
-                        {/* DESCRIPCIÓN Y CARACTERÍSTICAS */}
+
                         <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
                             {product.description}
                         </Typography>
@@ -184,19 +180,19 @@ export default function DetalleProducto() {
 
                         <Divider sx={{ my: 2 }} />
 
-                        {/* CANTIDAD Y BOTONES DE ACCIÓN */}
+
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mt: 2 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', border: '1px solid', borderColor: 'grey.300', borderRadius: 1 }}>
                                 <IconButton onClick={() => setQuantity(q => Math.max(1, q - 1))} size="small"><Remove /></IconButton>
                                 <Typography sx={{ px: 2, fontWeight: 600 }}>{quantity}</Typography>
                                 <IconButton onClick={() => setQuantity(q => q + 1)} size="small"><Add /></IconButton>
                             </Box>
-                            <Button 
-                                variant="contained" 
+                            <Button
+                                variant="contained"
                                 startIcon={isAdded ? <Check /> : <ShoppingCart />}
-                                size="large" 
-                                sx={{ 
-                                    flexGrow: 1, 
+                                size="large"
+                                sx={{
+                                    flexGrow: 1,
                                     py: 1.5,
                                     backgroundColor: isAdded ? 'success.main' : 'primary.main',
                                     '&:hover': {
@@ -215,7 +211,7 @@ export default function DetalleProducto() {
                     </Box>
                 </Box>
 
-                {/* --- SECCIÓN DE PRODUCTOS RELACIONADOS --- */}
+
                 <Box sx={{ mt: { xs: 6, md: 12 } }}>
                     <Typography variant="h4" fontWeight={700} sx={{ mb: 3 }}>También te podría gustar</Typography>
                     <Box

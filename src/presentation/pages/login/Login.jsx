@@ -5,12 +5,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import InputField from '../../components/common/InputField'
 import ButtonPrimary from '../../components/common/ButtonPrimary'
-import { useAuth } from '../../../app/providers/AuthProvider' // Importar el hook de autenticación
+import { useAuth } from '../../../app/providers/AuthProvider'
 
-// Logo
 const LOGO_URL = '/assets/logo.png';
 
-// Esquema de validación con Zod
 const loginSchema = z.object({
     emailOrUsername: z.string().min(1, 'Este campo es requerido'),
     password: z.string().min(1, 'La contraseña es requerida'),
@@ -18,7 +16,7 @@ const loginSchema = z.object({
 
 export default function Login() {
     const navigate = useNavigate();
-    const { login } = useAuth(); // Obtener la función de login del contexto
+    const { login } = useAuth();
     const { control, handleSubmit, setError, formState: { errors } } = useForm({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -28,22 +26,21 @@ export default function Login() {
     });
 
     const onSubmit = (data) => {
-        // Lógica de login temporal con roles
         if (data.emailOrUsername === 'admin' && data.password === 'admin') {
-            // Usuario administrador
+
             login({ name: 'Admin User', email: 'admin@mabs.com', role: 'admin' });
             navigate('/admin/dashboard');
             return
         }
 
         if (data.emailOrUsername === 'cliente' && data.password === 'cliente') {
-            // Usuario cliente
+
             login({ name: 'Cliente Demo', email: 'cliente@example.com', role: 'cliente' });
             navigate('/');
             return
         }
 
-        // Si las credenciales son incorrectas, mostrar un error
+
         setError('emailOrUsername', {
             type: 'manual',
             message: 'Credenciales incorrectas'
@@ -57,7 +54,7 @@ export default function Login() {
     return (
         <Container maxWidth="xs" sx={{ py: { xs: 4, md: 8 } }}>
             <Paper sx={{ p: { xs: 3, md: 5 }, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                {/* Logo */}
+
                 <Box
                     component="img"
                     src={LOGO_URL}
@@ -65,7 +62,7 @@ export default function Login() {
                     sx={{ height: 50, mb: 3 }}
                 />
 
-                {/* Títulos */}
+
                 <Typography variant="h4" component="h1" sx={{ fontWeight: 700, mb: 1, textAlign: 'center' }}>
                     Bienvenido/a de vuelta
                 </Typography>
@@ -73,7 +70,7 @@ export default function Login() {
                     Accede a tu cuenta para continuar
                 </Typography>
 
-                {/* Formulario */}
+
                 <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ width: '100%' }}>
                     <Box sx={{ mb: 2 }}>
                         <InputField

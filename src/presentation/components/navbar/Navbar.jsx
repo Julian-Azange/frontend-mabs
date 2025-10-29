@@ -27,12 +27,11 @@ import {
     DeleteOutline,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../app/providers/AuthProvider"; // Hook de autenticación
-import { useCart } from "../../../app/providers/CartProvider"; // Hook del carrito
+import { useAuth } from "../../../app/providers/AuthProvider";
+import { useCart } from "../../../app/providers/CartProvider";
 import Swal from 'sweetalert2'
 import { toast } from 'react-toastify'
 
-// Ruta del logo
 const LOGO_URL = "/assets/logo.png";
 
 export default function Navbar() {

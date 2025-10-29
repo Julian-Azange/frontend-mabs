@@ -8,12 +8,12 @@ import { useNavigate } from 'react-router-dom'
 
 export default function Dashboard() {
     const navigate = useNavigate();
-    // Demo data
+
     const kpis = [
         {
             label: 'Ventas Totales',
             value: '$ 12.500.000',
-            icon: <AttachMoney sx={{ color: '#e5b1fa', fontSize: 32 }} />, // pink
+            icon: <AttachMoney sx={{ color: '#e5b1fa', fontSize: 32 }} />,
             sub: '+15% esta semana',
             subColor: '#43a047',
             borderColor: '#e5b1fa',
@@ -21,7 +21,7 @@ export default function Dashboard() {
         {
             label: 'Pedidos Pendientes',
             value: 47,
-            icon: <ReceiptLong sx={{ color: '#ffe1a8', fontSize: 32 }} />, // yellow
+            icon: <ReceiptLong sx={{ color: '#ffe1a8', fontSize: 32 }} />,
             sub: 'Revisar urgentes',
             subColor: '#b8860b',
             borderColor: '#ffe1a8',
@@ -29,7 +29,7 @@ export default function Dashboard() {
         {
             label: 'Productos Activos',
             value: 82,
-            icon: <Inventory2 sx={{ color: '#f8bbd0', fontSize: 32 }} />, // pink
+            icon: <Inventory2 sx={{ color: '#f8bbd0', fontSize: 32 }} />,
             sub: 'Último añadido: Labial Mate',
             subColor: '#757575',
             borderColor: '#f8bbd0',
@@ -37,7 +37,7 @@ export default function Dashboard() {
         {
             label: 'Nuevos Usuarios',
             value: 125,
-            icon: <People sx={{ color: '#b2ebf2', fontSize: 32 }} />, // blue
+            icon: <People sx={{ color: '#b2ebf2', fontSize: 32 }} />,
             sub: 'Registrados esta semana',
             subColor: '#757575',
             borderColor: '#b2ebf2',
@@ -63,7 +63,7 @@ export default function Dashboard() {
                 gridTemplateColumns: '1fr',
                 gridAutoRows: 'max-content 1fr'
             }}>
-                {/* KPIs */}
+
                 <Grid container spacing={2}>
                     {kpis.map((kpi) => (
                         <Grid item xs={12} sm={6} lg={3} key={kpi.label}>
@@ -79,9 +79,9 @@ export default function Dashboard() {
                     ))}
                 </Grid>
 
-                {/* Main Content Grid */}
+
                 <Grid container spacing={2} sx={{ height: '100%', alignItems: 'stretch' }}>
-                    {/* Últimos Pedidos */}
+
                     <Grid item xs={12} lg={8} sx={{ display: 'flex' }}>
                         <LatestOrdersCard
                             title="Últimos Pedidos"
@@ -90,7 +90,7 @@ export default function Dashboard() {
                         />
                     </Grid>
 
-                    {/* Quick Access Cards */}
+
                     <Grid item xs={12} lg={4} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <Box sx={{ flex: 1 }}>
                             <QuickAccessCard

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
-const shipping = 5.99 // Temporal hasta implementar API
+const shipping = 5.99
 
 export default function Carrito() {
     const { cartItems, removeFromCart, updateQuantity, cartTotal } = useCart()
@@ -82,7 +82,7 @@ export default function Carrito() {
                 </Alert>
             ) : (
                 <Grid container spacing={3}>
-                    {/* Cart Items - More compact design */}
+
                     <Grid item xs={12} md={8}>
                         <Paper sx={{ overflow: 'hidden' }}>
                             {cartItems.map((item) => (
@@ -98,7 +98,7 @@ export default function Carrito() {
                                         '&:last-child': { borderBottom: 'none' }
                                     }}
                                 >
-                                    {/* Product Image */}
+
                                     <Box
                                         component="img"
                                         src={item.image}
@@ -111,7 +111,7 @@ export default function Carrito() {
                                         }}
                                     />
 
-                                    {/* Product Info */}
+
                                     <Box sx={{ flex: 1 }}>
                                         <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                                             {item.name}
@@ -122,7 +122,7 @@ export default function Carrito() {
                                             gap: 2,
                                             mt: 1
                                         }}>
-                                            {/* Quantity Controls */}
+
                                             <Box sx={{
                                                 display: 'flex',
                                                 alignItems: 'center',
@@ -167,7 +167,7 @@ export default function Carrito() {
                         </Paper>
                     </Grid>
 
-                    {/* Order Summary - Simplified */}
+
                     <Grid item xs={12} md={4}>
                         <Paper sx={{ p: 3, position: 'sticky', top: 20 }}>
                             <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>

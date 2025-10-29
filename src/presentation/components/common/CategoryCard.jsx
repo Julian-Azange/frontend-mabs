@@ -2,7 +2,6 @@ import { Card, CardMedia, Typography, Box, IconButton, styled } from '@mui/mater
 import { ArrowForward } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 
-// Componente estilizado para el botón de flecha que se mueve en hover
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
     backgroundColor: 'white',
     color: theme.palette.text.primary,
@@ -29,7 +28,6 @@ export default function CategoryCard({ category }) {
                 position: 'relative',
                 cursor: 'pointer',
                 height: '300px',
-                // width: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden',

@@ -39,7 +39,6 @@ import { toast } from 'react-toastify'
 import { useState } from 'react'
 import Swal from 'sweetalert2'
 
-// Datos de ejemplo - Reemplazar con datos reales de la API
 const userBankInfo = {
     bankName: "Banco XYZ",
     accountNumber: "**** **** **** 1234",
@@ -79,7 +78,6 @@ export default function Perfil() {
     const [openPasswordDialog, setOpenPasswordDialog] = useState(false)
     const [openBankDialog, setOpenBankDialog] = useState(false)
     const [openAddressDialog, setOpenAddressDialog] = useState(false)
-    // nuevos estados para edición
     const [openEditName, setOpenEditName] = useState(false)
     const [openEditPhone, setOpenEditPhone] = useState(false)
     const [openEditAddress, setOpenEditAddress] = useState(false)
@@ -95,7 +93,6 @@ export default function Perfil() {
     const handlePhotoChange = (event) => {
         const file = event.target.files[0]
         if (file) {
-            // Aquí iría la lógica para subir la foto
             toast.success('Foto de perfil actualizada')
             setOpenPhotoDialog(false)
         }
@@ -103,7 +100,6 @@ export default function Perfil() {
 
     const handlePasswordChange = async (oldPassword, newPassword) => {
         try {
-            // Aquí iría la lógica para cambiar la contraseña
             toast.success('Contraseña actualizada correctamente')
             setOpenPasswordDialog(false)
         } catch (error) {
@@ -112,13 +108,11 @@ export default function Perfil() {
     }
 
     const handleBankInfoUpdate = (bankData) => {
-        // Aquí iría la lógica para actualizar datos bancarios
         toast.success('Información bancaria actualizada')
         setOpenBankDialog(false)
     }
 
     const handleAddressAdd = (addressData) => {
-        // Aquí iría la lógica para agregar dirección
         toast.success('Dirección agregada correctamente')
         setOpenAddressDialog(false)
     }
@@ -185,7 +179,7 @@ export default function Perfil() {
                 </Box>
             </Box>
 
-            {/* Botón principal de cerrar sesión */}
+
             <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end' }}>
                 <Button variant="outlined" color="error" onClick={handleLogout}>
                     Cerrar Sesión
@@ -394,7 +388,7 @@ export default function Perfil() {
                 {activeTab === 2 && renderPaymentInfo()}
             </Paper>
 
-            {/* Diálogo para cambiar foto */}
+
             <Dialog open={openPhotoDialog} onClose={() => setOpenPhotoDialog(false)}>
                 <DialogTitle>Cambiar Foto de Perfil</DialogTitle>
                 <DialogContent>
@@ -415,7 +409,7 @@ export default function Perfil() {
                 </DialogContent>
             </Dialog>
 
-            {/* Diálogo para editar nombre */}
+
             <Dialog open={openEditName} onClose={() => setOpenEditName(false)}>
                 <DialogTitle>Editar Nombre</DialogTitle>
                 <DialogContent>
@@ -434,7 +428,7 @@ export default function Perfil() {
                 </DialogActions>
             </Dialog>
 
-            {/* Diálogo para editar teléfono */}
+
             <Dialog open={openEditPhone} onClose={() => setOpenEditPhone(false)}>
                 <DialogTitle>Editar Teléfono</DialogTitle>
                 <DialogContent>
@@ -453,7 +447,7 @@ export default function Perfil() {
                 </DialogActions>
             </Dialog>
 
-            {/* Diálogo para editar dirección */}
+
             <Dialog open={openEditAddress} onClose={() => setOpenEditAddress(false)}>
                 <DialogTitle>Editar Dirección</DialogTitle>
                 <DialogContent>
@@ -504,7 +498,7 @@ export default function Perfil() {
                 </DialogActions>
             </Dialog>
 
-            {/* Diálogo para cambiar contraseña */}
+
             <Dialog open={openPasswordDialog} onClose={() => setOpenPasswordDialog(false)}>
                 <DialogTitle>Cambiar Contraseña</DialogTitle>
                 <DialogContent>
@@ -540,7 +534,7 @@ export default function Perfil() {
                 </DialogActions>
             </Dialog>
 
-            {/* Diálogo para actualizar datos bancarios */}
+
             <Dialog open={openBankDialog} onClose={() => setOpenBankDialog(false)}>
                 <DialogTitle>Actualizar Datos Bancarios</DialogTitle>
                 <DialogContent>
@@ -573,7 +567,7 @@ export default function Perfil() {
                 </DialogActions>
             </Dialog>
 
-            {/* Diálogo para agregar dirección */}
+
             <Dialog open={openAddressDialog} onClose={() => setOpenAddressDialog(false)}>
                 <DialogTitle>Agregar Nueva Dirección</DialogTitle>
                 <DialogContent>

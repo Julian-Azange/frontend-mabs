@@ -45,7 +45,7 @@ export default function HeroBanner() {
         setActiveSlide((prev) => (prev + 1) % slides.length);
     };
 
-    // Auto-slide every 5 seconds
+
     React.useEffect(() => {
         const interval = setInterval(nextSlide, 5000);
         return () => clearInterval(interval);
@@ -63,14 +63,14 @@ export default function HeroBanner() {
         >
             <Container maxWidth="xl">
                 <Box sx={{ position: "relative" }}>
-                    {/* Carousel Container */}
+
                     <Box
                         sx={{
                             position: "relative",
                             overflow: "hidden",
                             borderRadius: 1,
                             backgroundColor: theme.palette.background.paper,
-                            // boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
+
                             background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.grey[100]} 100%)`,
                             minHeight: {
                                 xs: 'auto',
@@ -80,7 +80,7 @@ export default function HeroBanner() {
                             },
                         }}
                     >
-                        {/* Slides */}
+
                         <Box
                             sx={{
                                 display: "flex",
@@ -101,7 +101,7 @@ export default function HeroBanner() {
                                         color: theme.palette.text.primary,
                                     }}
                                 >
-                                    {/* Content Section */}
+
                                     <Box
                                         sx={{
                                             flex: 1,
@@ -112,7 +112,7 @@ export default function HeroBanner() {
                                             position: "relative",
                                         }}
                                     >
-                                        {/* Flash Deals Badge */}
+
                                         <Chip
                                             label={slide.badge}
                                             sx={{
@@ -128,7 +128,7 @@ export default function HeroBanner() {
                                             }}
                                         />
 
-                                        {/* Main Title */}
+
                                         <Typography
                                             variant="h1"
                                             sx={{
@@ -142,7 +142,7 @@ export default function HeroBanner() {
                                             {slide.title}
                                         </Typography>
 
-                                        {/* Subtitle with Shipping Icon */}
+
                                         <Box
                                             sx={{
                                                 display: "flex",
@@ -170,7 +170,7 @@ export default function HeroBanner() {
                                             </Typography>
                                         </Box>
 
-                                        {/* CTA Button */}
+
                                         <Button
                                             variant="contained"
                                             sx={{
@@ -196,7 +196,7 @@ export default function HeroBanner() {
                                         </Button>
                                     </Box>
 
-                                    {/* Image Section */}
+
                                     <Box
                                         sx={{
                                             flex: 1,
@@ -219,7 +219,7 @@ export default function HeroBanner() {
                                                 height: "auto",
                                                 borderRadius: 'none',
                                                 objectFit: "cover",
-                                                // boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
+
                                                 transform: "perspective(1000px) rotateY(-5deg)",
                                                 transition: "transform 0.3s ease",
                                                 "&:hover": {
@@ -231,10 +231,10 @@ export default function HeroBanner() {
                                 </Box>
                             ))}
                         </Box>
-                        
+
                     </Box>
 
-                    {/* Pagination Dots */}
+
                     <Box
                         sx={{
                             display: "flex",

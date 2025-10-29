@@ -10,7 +10,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import { ArrowForward } from "@mui/icons-material";
 
-// Ruta de la imagen
 const AFFILIATE_BANNER_IMAGE = "/assets/images/banner.jpg";
 
 export default function AffiliateBanner() {
@@ -32,13 +31,12 @@ export default function AffiliateBanner() {
                         overflow: 'hidden',
                     }}
                 >
-                    {/* --- Columna de Imagen (Izquierda) --- */}
                     <Box
                         sx={{
                             width: '100%',
                             height: { xs: 250, md: '100%' },
                             minHeight: { md: 450 },
-                            order: { xs: 1, md: 1 }, // Imagen primero en mobile y desktop
+                            order: { xs: 1, md: 1 },
                         }}
                     >
                         <Box
@@ -53,7 +51,6 @@ export default function AffiliateBanner() {
                         />
                     </Box>
 
-                    {/* --- Columna de Información (Derecha) --- */}
                     <Box
                         sx={{
                             p: { xs: 4, md: 6 },

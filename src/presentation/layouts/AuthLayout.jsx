@@ -2,7 +2,6 @@ import { Outlet, useNavigate } from 'react-router-dom'
 import { Box, useTheme, alpha, Button } from '@mui/material'
 import { ArrowBack } from '@mui/icons-material'
 
-// Imagen de fondo
 const BACKGROUND_IMAGE_URL = '/assets/images/banner.jpg';
 
 export default function AuthLayout() {
@@ -17,10 +16,9 @@ export default function AuthLayout() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 minHeight: '100vh',
-                overflow: 'hidden', // Para contener el fondo
+                overflow: 'hidden',
             }}
         >
-            {/* Botón para volver al Home */}
             <Button
                 onClick={() => navigate('/')}
                 startIcon={<ArrowBack />}
@@ -28,7 +26,7 @@ export default function AuthLayout() {
                     position: 'absolute',
                     top: 24,
                     right: 24,
-                    zIndex: 4, // Debe estar por encima de todo
+                    zIndex: 4,
                     color: theme.palette.common.white,
                     textTransform: 'none',
                     fontWeight: 600,
@@ -41,7 +39,7 @@ export default function AuthLayout() {
                 Regresar
             </Button>
 
-            {/* Fondo con imagen desenfocada */}
+
             <Box
                 sx={{
                     position: 'absolute',
@@ -52,12 +50,12 @@ export default function AuthLayout() {
                     backgroundImage: `url(${BACKGROUND_IMAGE_URL})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    filter: 'blur(8px)', // Efecto de desenfoque
-                    transform: 'scale(1.1)', // Evita bordes vacíos por el blur
+                    filter: 'blur(8px)',
+                    transform: 'scale(1.1)',
                     zIndex: 1,
                 }}
             />
-            {/* Capa de color rosado */}
+
             <Box
                 sx={{
                     position: 'absolute',
@@ -65,12 +63,11 @@ export default function AuthLayout() {
                     left: 0,
                     width: '100%',
                     height: '100%',
-                    backgroundColor: alpha(theme.palette.primary.main, 0.3), // Tinte rosado semitransparente
+                    backgroundColor: alpha(theme.palette.primary.main, 0.3),
                     zIndex: 2,
                 }}
             />
 
-            {/* Contenido del formulario */}
             <Box sx={{ zIndex: 3, position: 'relative' }}>
                 <Outlet />
             </Box>

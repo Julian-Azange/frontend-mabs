@@ -24,7 +24,6 @@ export default function Checkout() {
                 ))}
             </Stepper>
 
-            {/* Step 1: Shipping Address */}
             {activeStep === 0 && (
                 <Paper sx={{ p: 4 }}>
                     <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
@@ -58,7 +57,6 @@ export default function Checkout() {
                 </Paper>
             )}
 
-            {/* Step 2: Payment */}
             {activeStep === 1 && (
                 <Paper sx={{ p: 4 }}>
                     <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
@@ -91,7 +89,6 @@ export default function Checkout() {
                 </Paper>
             )}
 
-            {/* Step 3: Confirmation */}
             {activeStep === 2 && (
                 <Paper sx={{ p: 4, textAlign: 'center' }}>
                     <Box

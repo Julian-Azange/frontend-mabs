@@ -10,7 +10,6 @@ export default function AdminLayout() {
     const navigate = useNavigate()
     const { user, logout } = useAuth()
 
-    // simple role guard
     if (!user || user.role !== 'admin') {
         navigate('/')
         return null
@@ -26,7 +25,6 @@ export default function AdminLayout() {
 
     return (
         <Box sx={{ display: 'flex' }}>
-            {/* Topbar */}
             <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, backgroundColor: '#ffffff', color: 'text.primary', boxShadow: 'none', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
                 <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -45,7 +43,6 @@ export default function AdminLayout() {
                 </Toolbar>
             </AppBar>
 
-            {/* Sidebar */}
             <Drawer
                 variant="permanent"
                 sx={{

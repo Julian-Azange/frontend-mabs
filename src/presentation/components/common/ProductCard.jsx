@@ -22,7 +22,6 @@ export default function ProductCard({ product, onAddToCart }) {
     const handleQuickView = (e) => {
         e.stopPropagation()
         console.log('Quick view:', product.id)
-        // Navegar a la página de detalle del producto
         navigate(`/producto/${product.id}`)
     }
 
@@ -34,11 +33,11 @@ export default function ProductCard({ product, onAddToCart }) {
             sx={{
                 position: 'relative',
                 cursor: 'pointer',
-                height: '480px', // Altura fija para todas las tarjetas
+                height: '480px',
                 width: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                overflow: 'visible', // Permitir que el tooltip se vea fuera de la card
+                overflow: 'visible',
                 borderRadius: 'none',
                 transition: 'all 0.3s ease',
                 boxShadow: 'none',
@@ -46,7 +45,7 @@ export default function ProductCard({ product, onAddToCart }) {
                 backgroundColor: 'white',
             }}
         >
-            {/* Image Container */}
+
             <Box sx={{
                 position: 'relative',
                 overflow: 'hidden',
@@ -74,7 +73,6 @@ export default function ProductCard({ product, onAddToCart }) {
                     }}
                 />
 
-                {/* Discount Badge */}
                 {product.discount && (
                     <Chip
                         label={`${product.discount}% off`}
@@ -93,7 +91,6 @@ export default function ProductCard({ product, onAddToCart }) {
                     />
                 )}
 
-                {/* Color Swatch with Interactive Tooltip */}
                 {product.color && (
                     <Box
                         onMouseEnter={() => setIsSwatchHovered(true)}
@@ -102,7 +99,7 @@ export default function ProductCard({ product, onAddToCart }) {
                             position: 'absolute',
                             top: 12,
                             right: 12,
-                            zIndex: 3, // zIndex mayor para estar sobre otros elementos
+                            zIndex: 3,
                             display: 'flex',
                             alignItems: 'center',
                         }}
@@ -117,7 +114,7 @@ export default function ProductCard({ product, onAddToCart }) {
                                     px: 1,
                                     py: 0.5,
                                     borderRadius: 1,
-                                    mr: 1, // Margen a la derecha de la etiqueta
+                                    mr: 1,
                                     whiteSpace: 'nowrap',
                                 }}
                             >
@@ -138,7 +135,6 @@ export default function ProductCard({ product, onAddToCart }) {
                     </Box>
                 )}
 
-                {/* Hover Buttons */}
                 <Box
                     sx={{
                         position: 'absolute',
@@ -195,7 +191,7 @@ export default function ProductCard({ product, onAddToCart }) {
                 </Box>
             </Box>
 
-            {/* Product Info Section - Centered */}
+
             <Box
                 sx={{
                     height: '40%',
@@ -208,7 +204,6 @@ export default function ProductCard({ product, onAddToCart }) {
                     p: 2.5,
                 }}
             >
-                {/* Product Category */}
                 <Typography
                     variant="subtitle2"
                     sx={{
@@ -223,10 +218,9 @@ export default function ProductCard({ product, onAddToCart }) {
                     {product.category || 'SPEAKERS'}
                 </Typography>
 
-                {/* Product Name */}
                 <Typography
                     variant="h6"
-                    title={product.name} // Tooltip para ver el nombre completo
+                    title={product.name}
                     sx={{
                         fontSize: '1rem',
                         fontWeight: 600,
@@ -236,13 +230,12 @@ export default function ProductCard({ product, onAddToCart }) {
                         width: '100%',
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
-                        textOverflow: 'ellipsis', // Añade ... si el texto es muy largo
+                        textOverflow: 'ellipsis',
                     }}
                 >
                     {product.name}
                 </Typography>
 
-                {/* Price Section */}
                 <Typography
                     variant="h6"
                     sx={{
