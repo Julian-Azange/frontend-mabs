@@ -1,21 +1,20 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 export const getAuthorizedRoutes = async () => {
-    try {
-        const response = await fetch(`${API_URL}/routes`, {
-            credentials: 'include',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            }
-        });
+    const user = JSON.parse(localStorage.getItem('user'));
 
-        if (!response.ok) {
-            throw new Error('Error al obtener las rutas');
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('Error:', error);
-        return [];
+    if (user?.role === 'admin') {
+        return {
+            adminRoutes: [
+                { path: 'dashboard', component: 'DashboardAdmin' },
+                { path: 'productos', component: 'GestionProductos' },
+                { path: 'categorias', component: 'GestionCategorias' },
+                { path: 'usuarios', component: 'GestionUsuarios' },
+                { path: 'pedidos', component: 'PedidosAdmin' },
+                { path: 'configuracion', component: 'ConfiguracionAdmin' }
+            ]
+        };
     }
+
+    return []; // Para usuarios no admin, retornamos un array vacío
 };

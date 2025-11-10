@@ -3,6 +3,7 @@ import LayoutRoutes from './app/router/LayoutRoutes'
 import ThemeProvider from './app/providers/ThemeProvider'
 import AuthProvider from './app/providers/AuthProvider'
 import CartProvider from './app/providers/CartProvider'
+import { MembershipProvider } from './app/providers/MembershipProvider'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -11,9 +12,11 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <CartProvider>
-          <BrowserRouter>
-            <LayoutRoutes />
-          </BrowserRouter>
+          <MembershipProvider>
+            <BrowserRouter>
+              <LayoutRoutes />
+            </BrowserRouter>
+          </MembershipProvider>
         </CartProvider>
       </AuthProvider>
       <ToastContainer

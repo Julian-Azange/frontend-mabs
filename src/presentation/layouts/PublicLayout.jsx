@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import Navbar from '../components/navbar/Navbar'
 import Footer from '../components/footer/Footer'
+import WelcomeModal from '../components/membership/WelcomeModal'
 import { Box } from '@mui/material'
 
 export default function PublicLayout() {
@@ -11,6 +12,7 @@ export default function PublicLayout() {
                 <Outlet />
             </Box>
             <Footer />
+            <WelcomeModal />
         </Box>
     )
 }

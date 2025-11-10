@@ -52,7 +52,7 @@ export default function Login() {
     };
 
     return (
-        <Container maxWidth="xs" sx={{ py: { xs: 4, md: 8 } }}>
+        <Box sx={{ width: '100%' }}>
             <Paper sx={{ p: { xs: 3, md: 5 }, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
                 <Box
@@ -115,6 +115,6 @@ export default function Login() {
                     </Typography>
                 </Box>
             </Paper>
-        </Container>
+        </Box>
     );
 }

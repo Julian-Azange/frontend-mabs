@@ -25,10 +25,13 @@ import {
     Person,
     Close,
     DeleteOutline,
+    AdminPanelSettings,
+    MonetizationOn,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { useCart } from "../../../app/providers/CartProvider";
+import { useMembership } from "../../../app/providers/MembershipProvider";
 import Swal from 'sweetalert2'
 import { toast } from 'react-toastify'
 
@@ -40,6 +43,7 @@ export default function Navbar() {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
     const { cartItems, totalItems, removeFromCart, cartTotal } = useCart();
+    const { hasActiveMembership } = useMembership();
 
     const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
@@ -147,6 +151,44 @@ export default function Navbar() {
                     <ShoppingCartOutlined />
                 </Badge>
             </IconButton>
+            {user?.role === 'admin' && (
+                <Button
+                    variant="outlined"
+                    startIcon={<AdminPanelSettings />}
+                    onClick={() => navigate("/admin/dashboard")}
+                    sx={{
+                        borderRadius: 2,
+                        color: 'primary.main',
+                        borderColor: 'primary.main',
+                        '&:hover': {
+                            backgroundColor: 'primary.main',
+                            color: 'white',
+                            borderColor: 'primary.main'
+                        }
+                    }}
+                >
+                    Panel Admin
+                </Button>
+            )}
+            {user && hasActiveMembership && (
+                <Button
+                    variant="outlined"
+                    startIcon={<MonetizationOn />}
+                    onClick={() => navigate("/membresia/dashboard")}
+                    sx={{
+                        borderRadius: 2,
+                        color: 'primary.main',
+                        borderColor: 'primary.main',
+                        '&:hover': {
+                            backgroundColor: 'primary.main',
+                            color: 'white',
+                            borderColor: 'primary.main'
+                        }
+                    }}
+                >
+                    Mi Membresía
+                </Button>
+            )}
             {user ? (
                 <IconButton
                     onClick={() => navigate("/perfil")}
@@ -234,11 +276,55 @@ export default function Navbar() {
                     ))}
                 </List>
                 <Divider />
-                <Box sx={{ p: 2 }}>
+                <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    {user?.role === 'admin' && (
+                        <Button
+                            variant="contained"
+                            fullWidth
+                            startIcon={<AdminPanelSettings />}
+                            onClick={() => {
+                                navigate('/admin/dashboard');
+                                setMobileDrawerOpen(false);
+                            }}
+                        >
+                            Panel Admin
+                        </Button>
+                    )}
+                    {user && hasActiveMembership && (
+                        <Button
+                            variant="contained"
+                            fullWidth
+                            startIcon={<MonetizationOn />}
+                            onClick={() => {
+                                navigate('/membresia/dashboard');
+                                setMobileDrawerOpen(false);
+                            }}
+                        >
+                            Mi Membresía
+                        </Button>
+                    )}
                     {user ? (
-                        <Button variant="outlined" fullWidth onClick={() => { logout(); setMobileDrawerOpen(false); }}>Cerrar Sesión</Button>
+                        <Button
+                            variant="outlined"
+                            fullWidth
+                            onClick={() => {
+                                logout();
+                                setMobileDrawerOpen(false);
+                            }}
+                        >
+                            Cerrar Sesión
+                        </Button>
                     ) : (
-                        <Button variant="contained" fullWidth onClick={() => { navigate('/login'); setMobileDrawerOpen(false); }}>Ingresar</Button>
+                        <Button
+                            variant="contained"
+                            fullWidth
+                            onClick={() => {
+                                navigate('/login');
+                                setMobileDrawerOpen(false);
+                            }}
+                        >
+                            Ingresar
+                        </Button>
                     )}
                 </Box>
             </Drawer>

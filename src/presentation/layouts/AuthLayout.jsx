@@ -25,7 +25,7 @@ export default function AuthLayout() {
                 sx={{
                     position: 'absolute',
                     top: 24,
-                    right: 24,
+                    left: 24,
                     zIndex: 4,
                     color: theme.palette.common.white,
                     textTransform: 'none',
@@ -38,7 +38,6 @@ export default function AuthLayout() {
             >
                 Regresar
             </Button>
-
 
             <Box
                 sx={{
@@ -68,7 +67,15 @@ export default function AuthLayout() {
                 }}
             />
 
-            <Box sx={{ zIndex: 3, position: 'relative' }}>
+            <Box
+                sx={{
+                    zIndex: 3,
+                    position: 'relative',
+                    width: '100%',
+                    maxWidth: { xs: '90%', sm: '450px' },
+                    mx: 'auto'
+                }}
+            >
                 <Outlet />
             </Box>
         </Box>

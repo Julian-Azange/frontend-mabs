@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../providers/AuthProvider'
 import { getAuthorizedRoutes } from '../services/routeService'
@@ -7,6 +7,8 @@ import PublicLayout from '../../presentation/layouts/PublicLayout'
 import AuthLayout from '../../presentation/layouts/AuthLayout'
 import Home from '../../presentation/pages/home/Home'
 import Productos from '../../presentation/pages/productos/Productos'
+import MembershipPayment from '../../presentation/pages/membresia/MembershipPayment'
+import MembershipDashboard from '../../presentation/pages/membresia/MembershipDashboard'
 import DetalleProducto from '../../presentation/pages/producto/DetalleProducto'
 import Carrito from '../../presentation/pages/carrito/Carrito'
 import Checkout from '../../presentation/pages/checkout/Checkout'
@@ -17,6 +19,7 @@ import GestionProductos from '../../presentation/pages/admin/GestionProductos'
 import GestionUsuarios from '../../presentation/pages/admin/GestionUsuarios'
 import PedidosAdmin from '../../presentation/pages/admin/Pedidos'
 import ConfiguracionAdmin from '../../presentation/pages/admin/Configuracion'
+import GestionCategorias from '../../presentation/pages/admin/GestionCategorias'
 import Login from '../../presentation/pages/login/Login'
 import Registro from '../../presentation/pages/registro/Registro'
 import RecuperarContrasena from '../../presentation/pages/recuperar-contrasena/RecuperarContrasena'
@@ -37,7 +40,10 @@ const componentMap = {
     GestionUsuarios,
     PedidosAdmin,
     ConfiguracionAdmin,
-    Contacto
+    GestionCategorias,
+    Contacto,
+    MembershipPayment,
+    MembershipDashboard
 }
 
 export default function LayoutRoutes() {
@@ -47,15 +53,17 @@ export default function LayoutRoutes() {
     useEffect(() => {
         const loadRoutes = async () => {
             try {
-                const routes = await getAuthorizedRoutes()
-                setAuthorizedRoutes(routes)
+                const routes = await getAuthorizedRoutes();
+                setAuthorizedRoutes(routes);
             } catch (error) {
-                console.error('Error cargando rutas:', error)
+                console.error('Error cargando rutas:', error);
             }
         }
 
         if (user) {
-            loadRoutes()
+            loadRoutes();
+        } else {
+            setAuthorizedRoutes(null);
         }
     }, [user])
 
@@ -98,6 +106,10 @@ export default function LayoutRoutes() {
                 <Route path="carrito" element={<Carrito />} />
                 <Route path="checkout" element={<Checkout />} />
                 <Route path="contacto" element={<Contacto />} />
+                <Route path="membresia/*">
+                    <Route path="pago" element={<MembershipPayment />} />
+                    <Route path="dashboard" element={user ? <MembershipDashboard /> : <Navigate to="/login" />} />
+                </Route>
                 {user && <Route path="perfil" element={<Perfil />} />}
             </Route>
 
