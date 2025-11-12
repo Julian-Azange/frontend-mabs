@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
     Box,
     Container,
@@ -15,8 +15,8 @@ import {
     CircularProgress
 } from '@mui/material';
 import { toast } from 'react-toastify';
-import { processMembershipPayment } from '../../../app/services/membershipService';
 import { useMembership } from '../../../app/providers/MembershipProvider';
+
 
 const steps = ['Información Personal', 'Resumen', 'Pago'];
 
@@ -24,7 +24,8 @@ export default function MembershipPayment() {
     const [activeStep, setActiveStep] = useState(0);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { refreshMembershipData } = useMembership();
+    const { token } = useParams();
+    const { purchaseMembership } = useMembership();
     const [formData, setFormData] = useState({
         personalInfo: {
             nombre: '',
@@ -71,12 +72,12 @@ export default function MembershipPayment() {
 
         setLoading(true);
         try {
-            // Enviamos todos los datos recolectados
-            await processMembershipPayment({
-                ...formData.personalInfo,
-                ...formData.paymentInfo
-            });
-            await refreshMembershipData();
+            // Usamos la función del contexto para comprar la membresía
+            await purchaseMembership(
+                token,
+                formData.personalInfo.email,
+                'Bearer placeholder-token' // Token de referidos (placeholder)
+            );
             toast.success('¡Pago procesado exitosamente!');
             navigate('/membresia/dashboard');
         } catch (error) {

@@ -1,46 +1,75 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import { getMembershipData } from '../services/membershipService';
-import { useAuth } from './AuthProvider';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import * as membershipService from '../services/membershipService';
 
 const MembershipContext = createContext();
 
 export function MembershipProvider({ children }) {
+    const [actionLoading, setActionLoading] = useState(false);
+    const [dataLoading, setDataLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [membershipData, setMembershipData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const { user } = useAuth();
+
+    const loadMembershipData = useCallback(async () => {
+        setDataLoading(true);
+        try {
+            const data = await membershipService.getCurrentMembership();
+            setMembershipData(data);
+        } catch (err) {
+            setError(err.message);
+            console.error('Error loading membership data:', err);
+        } finally {
+            setDataLoading(false);
+        }
+    }, []);
 
     useEffect(() => {
-        if (user) {
-            loadMembershipData();
-        } else {
-            setMembershipData(null);
-            setLoading(false);
-        }
-    }, [user]);
+        loadMembershipData();
+    }, [loadMembershipData]);
 
-    const loadMembershipData = async () => {
+    const handlePurchaseMembership = async (paymentData, token) => {
+        setActionLoading(true);
+        setError(null);
         try {
-            const data = await getMembershipData();
-            setMembershipData(data);
-        } catch (error) {
-            console.error('Error loading membership data:', error);
+            const result = await membershipService.processMembershipPayment(paymentData, token);
+            if (result.wompiRedirectUrl) {
+                membershipService.redirectToWompi(result.wompiRedirectUrl);
+            }
+            return result;
+        } catch (err) {
+            setError(err.message);
+            throw err;
         } finally {
-            setLoading(false);
+            setActionLoading(false);
         }
     };
 
-    const refreshMembershipData = () => {
-        loadMembershipData();
+    const handleCreateMembershipParametrization = async (parametrizationData, metasploitToken) => {
+        setActionLoading(true);
+        setError(null);
+        try {
+            const result = await membershipService.createMembershipParametrization(parametrizationData, metasploitToken);
+            return result;
+        } catch (err) {
+            setError(err.message);
+            throw err;
+        } finally {
+            setActionLoading(false);
+        }
+    };
+
+    const value = {
+        membership: membershipData,
+        isLoading: dataLoading,
+        actionLoading,
+        error,
+        hasActiveMembership: !!membershipData && membershipData.status === 'active',
+        purchaseMembership: handlePurchaseMembership,
+        createMembershipParametrization: handleCreateMembershipParametrization,
+        refreshMembershipData: loadMembershipData,
     };
 
     return (
-        <MembershipContext.Provider
-            value={{
-                membershipData,
-                loading,
-                refreshMembershipData
-            }}
-        >
+        <MembershipContext.Provider value={value}>
             {children}
         </MembershipContext.Provider>
     );

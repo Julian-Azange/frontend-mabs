@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Paper, IconButton, Tooltip } from '@mui/material'
 import { Visibility, Edit, Delete } from '@mui/icons-material'
 
-export default function DataTable({ columns = [], data = [], pageSizeOptions = [5, 10, 25], initialPageSize = 10, onView, onEdit, onDelete }) {
+export default function DataTable({ columns = [], data = [], pageSizeOptions = [5, 10, 25], initialPageSize = 10, onView, onEdit, onDelete, getRowId }) {
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(initialPageSize)
 
@@ -36,7 +36,7 @@ export default function DataTable({ columns = [], data = [], pageSizeOptions = [
                         {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, idx) => (
                             <TableRow
                                 hover
-                                key={row.id || idx}
+                                key={getRowId ? getRowId(row) : row.id || idx}
                                 sx={{
                                     '&:hover': {
                                         backgroundColor: 'rgba(255, 192, 203, 0.1) !important'
@@ -51,7 +51,7 @@ export default function DataTable({ columns = [], data = [], pageSizeOptions = [
                                             borderBottom: '1px solid rgba(224, 224, 224, 1)'
                                         }}
                                     >
-                                        {col.render ? col.render(row[col.field], row) : row[col.field]}
+                                        {col.render ? col.render(row[col.field], row) : (col.valueGetter ? col.valueGetter({ row }) : row[col.field])}
                                     </TableCell>
                                 ))}
                                 <TableCell

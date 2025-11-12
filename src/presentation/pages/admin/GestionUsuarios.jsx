@@ -1,36 +1,43 @@
-import { Container, Box, Typography, Button, Stack, TextField } from '@mui/material'
-import { useEffect, useMemo, useState } from 'react'
+import { Container, Box, Typography, Button, Stack, TextField, CircularProgress } from '@mui/material'
+import { useMemo, useState } from 'react'
 import DataTable from '../../components/admin/DataTable'
 import Modal from '../../components/common/Modal'
-import usersData from '../../../data/users.json'
+import { useUsers } from '../../../app/hooks/useUsers'
 
 export default function GestionUsuarios() {
-    const [users, setUsers] = useState([])
+    const { users, loading, error, refetch } = useUsers()
     const [open, setOpen] = useState(false)
     const [selected, setSelected] = useState(null)
     const [query, setQuery] = useState('')
 
-    useEffect(() => {
-        setUsers(usersData)
-    }, [])
-
     const columns = useMemo(() => [
-        { field: 'id', headerName: 'ID', minWidth: 60 },
-        { field: 'name', headerName: 'Nombre', minWidth: 180 },
-        { field: 'email', headerName: 'Email', minWidth: 220 },
-        { field: 'role', headerName: 'Rol', minWidth: 120 }
+        // El endpoint de listar no devuelve el ID, usamos el correo como key.
+        { field: 'correo', headerName: 'Email', minWidth: 220 },
+        { field: 'rol.rol', headerName: 'Rol', minWidth: 120, valueGetter: (params) => params.row.rol.rol },
+        { field: 'estado', headerName: 'Estado', minWidth: 120, valueGetter: (params) => params.row.estado ? 'Activo' : 'Inactivo' },
+        { field: 'verificado', headerName: 'Verificado', minWidth: 120, valueGetter: (params) => params.row.verificado ? 'Sí' : 'No' },
     ], [])
 
-    const filtered = users.filter(u => u.name.toLowerCase().includes(query.toLowerCase()) || u.email.toLowerCase().includes(query.toLowerCase()))
+    const filtered = users.filter(u => u.correo.toLowerCase().includes(query.toLowerCase()))
 
     const handleView = (row) => { setSelected(row); setOpen(true) }
     const handleEdit = (row) => { setSelected(row); setOpen(true) }
     const handleDelete = (row) => {
-        if (!confirm(`Eliminar usuario ${row.name}?`)) return
-        setUsers(prev => prev.filter(u => u.id !== row.id))
+        // Se necesita el ID para eliminar, pero no viene en la respuesta.
+        // Se debería usar el servicio de inactivación aquí.
+        if (!confirm(`Inactivar usuario ${row.correo}?`)) return
+        console.log("Inactivar usuario", row.correo)
     }
 
     const handleClose = () => { setSelected(null); setOpen(false) }
+
+    if (loading) {
+        return <Container maxWidth="xl" sx={{ mt: 4, mb: 4, display: 'flex', justifyContent: 'center' }}><CircularProgress /></Container>
+    }
+
+    if (error) {
+        return <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}><Typography color="error">Error al cargar los usuarios.</Typography></Container>
+    }
 
     return (
         <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
@@ -52,16 +59,17 @@ export default function GestionUsuarios() {
                 onView={handleView}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
+                getRowId={(row) => row.correo} // Usamos el correo como ID para la tabla
             />
 
             <Modal open={open} title={selected ? 'Ver / Editar Usuario' : 'Crear Usuario'} onClose={handleClose}>
                 <Stack spacing={2} sx={{ mt: 1 }}>
-                    <TextField label="Nombre" defaultValue={selected?.name || ''} />
-                    <TextField label="Email" defaultValue={selected?.email || ''} />
-                    <TextField label="Rol" defaultValue={selected?.role || 'cliente'} />
+                    <TextField label="Email" defaultValue={selected?.correo || ''} />
+                    <TextField label="Rol" defaultValue={selected?.rol?.rol || 'CLIENTE'} />
                 </Stack>
             </Modal>
         </Box>
     </Container>
     )
 }
+

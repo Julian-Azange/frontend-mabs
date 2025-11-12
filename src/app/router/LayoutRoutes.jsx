@@ -7,8 +7,6 @@ import PublicLayout from '../../presentation/layouts/PublicLayout'
 import AuthLayout from '../../presentation/layouts/AuthLayout'
 import Home from '../../presentation/pages/home/Home'
 import Productos from '../../presentation/pages/productos/Productos'
-import MembershipPayment from '../../presentation/pages/membresia/MembershipPayment'
-import MembershipDashboard from '../../presentation/pages/membresia/MembershipDashboard'
 import DetalleProducto from '../../presentation/pages/producto/DetalleProducto'
 import Carrito from '../../presentation/pages/carrito/Carrito'
 import Checkout from '../../presentation/pages/checkout/Checkout'
@@ -24,6 +22,7 @@ import Login from '../../presentation/pages/login/Login'
 import Registro from '../../presentation/pages/registro/Registro'
 import RecuperarContrasena from '../../presentation/pages/recuperar-contrasena/RecuperarContrasena'
 import Contacto from '../../presentation/pages/contacto/Contacto'
+import { MembershipRoutes } from './MembershipRoutes'
 
 const componentMap = {
     Home,
@@ -41,9 +40,7 @@ const componentMap = {
     PedidosAdmin,
     ConfiguracionAdmin,
     GestionCategorias,
-    Contacto,
-    MembershipPayment,
-    MembershipDashboard
+    Contacto
 }
 
 export default function LayoutRoutes() {
@@ -106,10 +103,7 @@ export default function LayoutRoutes() {
                 <Route path="carrito" element={<Carrito />} />
                 <Route path="checkout" element={<Checkout />} />
                 <Route path="contacto" element={<Contacto />} />
-                <Route path="membresia/*">
-                    <Route path="pago" element={<MembershipPayment />} />
-                    <Route path="dashboard" element={user ? <MembershipDashboard /> : <Navigate to="/login" />} />
-                </Route>
+                <Route path="membresia/*" element={<MembershipRoutes />} />
                 {user && <Route path="perfil" element={<Perfil />} />}
             </Route>
 

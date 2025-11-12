@@ -1,103 +1,92 @@
-// Datos temporales para simular la API
-let temporalMembershipData = {
-    membershipStatus: 'active',
-    referralCode: 'MABS-' + Math.random().toString(36).substring(7).toUpperCase(),
-    referralLink: 'https://mabs.com/ref/' + Math.random().toString(36).substring(7),
-    totalReferrals: 15,
-    totalEarnings: 750000,
-    referrals: [
-        {
-            id: 1,
-            name: 'Juan Pérez',
-            email: 'juan@example.com',
-            date: '2023-11-01',
-            level: 0,
-            commission: 25,
-            status: 'active'
+import API_BASE_URL from './api';
+
+/**
+ * Processes the membership payment through Wompi.
+ * This function communicates with the backend to create a Wompi payment transaction
+ * and returns the URL to redirect the user for payment.
+ *
+ * @param {object} paymentData - The payment data.
+ * @param {number} paymentData.amountInCents - The amount in COP cents.
+ * @param {string} paymentData.customerEmail - The customer's email.
+ * @param {string} paymentData.reference - The unique payment reference.
+ * @param {string} token - The user's auth token.
+ * @returns {Promise<{ wompiRedirectUrl: string }>} The response from the server containing the Wompi URL.
+ */
+export const processMembershipPayment = async (paymentData, token) => {
+    const response = await fetch(`${API_BASE_URL}/pagos/crear-transaccion-wompi`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
         },
-        {
-            id: 2,
-            name: 'María López',
-            email: 'maria@example.com',
-            date: '2023-11-02',
-            level: 1,
-            commission: 5,
-            status: 'active'
+        body: JSON.stringify(paymentData)
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Error al procesar el pago con Wompi' }));
+        throw new Error(errorData.message || 'Error al procesar el pago con Wompi');
+    }
+    return await response.json();
+};
+
+/**
+ * Redirects the user to the Wompi payment gateway.
+ * @param {string} wompiRedirectUrl - The URL to redirect to.
+ */
+export const redirectToWompi = (wompiRedirectUrl) => {
+    if (wompiRedirectUrl) {
+        window.location.href = wompiRedirectUrl;
+    } else {
+        console.error('No Wompi redirect URL provided.');
+        throw new Error('No se pudo redirigir a Wompi. URL no válida.');
+    }
+};
+
+/**
+ * Creates a new membership parameterization (type).
+ * @param {object} parametrizationData - The data for the new membership type.
+ * @param {string} parametrizationData.nombreMembresia - The name of the membership.
+ * @param {string} parametrizationData.descripcion - The description of the membership.
+ * @param {number} parametrizationData.precioMembresia - The price of the membership.
+ * @param {string} metasploitToken - The custom security token for the 'metasploit' header.
+ * @returns {Promise<any>} The response from the server.
+ */
+export const createMembershipParametrization = async (parametrizationData, metasploitToken) => {
+    const response = await fetch(`${API_BASE_URL}/membresia/seguridad/crear/parametrizacion/membresia`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'metasploit': metasploitToken,
         },
-        {
-            id: 3,
-            name: 'Carlos Rodríguez',
-            email: 'carlos@example.com',
-            date: '2023-11-03',
-            level: 2,
-            commission: 5,
-            status: 'active'
-        }
-    ],
-    commissionsByLevel: [
-        { level: 0, percentage: 25 },
-        { level: 1, percentage: 5 },
-        { level: 2, percentage: 5 },
-        { level: 3, percentage: 5 },
-        { level: 4, percentage: 5 }
-    ]
+        body: JSON.stringify(parametrizationData)
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Error al crear la parametrización de membresía' }));
+        throw new Error(errorData.message || 'Error al crear la parametrización de membresía');
+    }
+    return await response.json();
 };
 
-// Simulación de proceso de pago
-export const processMembershipPayment = async (paymentData) => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve({
-                success: true,
-                message: 'Pago procesado exitosamente',
-                transactionId: 'TRANS-' + Math.random().toString(36).substring(7).toUpperCase()
-            });
-        }, 2000);
-    });
-};
+/**
+ * Gets the current user's membership data.
+ * This is a placeholder and returns mock data.
+ * @returns {Promise<any>} The membership data.
+ */
+export const getCurrentMembership = async () => {
+    console.log('Fetching current membership data (mocked)');
+    // Simulate an API call
+    await new Promise(resolve => setTimeout(resolve, 500));
 
-// Obtener datos de la membresía
-export const getMembershipData = async () => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(temporalMembershipData);
-        }, 1000);
-    });
-};
-
-// Generar nuevo enlace de referido
-export const generateNewReferralLink = async () => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const newLink = 'https://mabs.com/ref/' + Math.random().toString(36).substring(7);
-            temporalMembershipData.referralLink = newLink;
-            resolve({ success: true, referralLink: newLink });
-        }, 1000);
-    });
-};
-
-// Obtener historial de comisiones
-export const getCommissionHistory = async () => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve({
-                commissions: [
-                    {
-                        id: 1,
-                        date: '2023-11-01',
-                        amount: 50000,
-                        referral: 'Juan Pérez',
-                        status: 'paid'
-                    },
-                    {
-                        id: 2,
-                        date: '2023-11-02',
-                        amount: 25000,
-                        referral: 'María López',
-                        status: 'pending'
-                    }
-                ]
-            });
-        }, 1000);
-    });
+    // Return mock data
+    return {
+        status: 'active',
+        user: {
+            name: 'John Doe',
+            email: 'john.doe@example.com',
+        },
+        membershipType: 'Premium',
+        startDate: '2023-01-01',
+        endDate: '2024-01-01',
+    };
 };
