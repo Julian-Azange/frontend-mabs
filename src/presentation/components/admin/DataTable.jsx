@@ -1,141 +1,54 @@
-import React, { useState } from 'react'
-import { Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Paper, IconButton, Tooltip } from '@mui/material'
-import { Visibility, Edit, Delete } from '@mui/icons-material'
+import React from 'react';
+import { Box } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 
-export default function DataTable({ columns = [], data = [], pageSizeOptions = [5, 10, 25], initialPageSize = 10, onView, onEdit, onDelete, getRowId }) {
-    const [page, setPage] = useState(0)
-    const [rowsPerPage, setRowsPerPage] = useState(initialPageSize)
-
-    const handleChangePage = (event, newPage) => setPage(newPage)
-    const handleChangeRowsPerPage = (event) => { setRowsPerPage(parseInt(event.target.value, 10)); setPage(0) }
-
-    const emptyRows = Math.max(0, (1 + page) * rowsPerPage - data.length)
-
+/**
+ * Componente reutilizable de DataGrid.
+ * @param {Array} rows - Los datos que se mostrarán en las filas.
+ * @param {Array} columns - La definición de las columnas.
+ * @param {Object} [sx] - Estilos personalizados para el contenedor Box.
+ * @param {Object} [dataGridProps] - Props adicionales para el componente DataGrid.
+ */
+export const DataTable = ({ rows, columns, sx, ...dataGridProps }) => {
     return (
-        <Paper elevation={1} sx={{ backgroundColor: 'white' }}>
-            <TableContainer>
-                <Table>
-                    <TableHead>
-                        <TableRow sx={{ backgroundColor: 'primary.main' }}>
-                            {columns.map(col => (
-                                <TableCell
-                                    key={col.field}
-                                    style={{
-                                        minWidth: col.minWidth || 100,
-                                        color: 'white',
-                                        fontWeight: 600
-                                    }}
-                                >
-                                    {col.headerName}
-                                </TableCell>
-                            ))}
-                            <TableCell align="right" sx={{ color: 'white', fontWeight: 600 }}>Acciones</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, idx) => (
-                            <TableRow
-                                hover
-                                key={getRowId ? getRowId(row) : row.id || idx}
-                                sx={{
-                                    '&:hover': {
-                                        backgroundColor: 'rgba(255, 192, 203, 0.1) !important'
-                                    }
-                                }}
-                            >
-                                {columns.map(col => (
-                                    <TableCell
-                                        key={col.field}
-                                        sx={{
-                                            color: '#333',
-                                            borderBottom: '1px solid rgba(224, 224, 224, 1)'
-                                        }}
-                                    >
-                                        {col.render ? col.render(row[col.field], row) : (col.valueGetter ? col.valueGetter({ row }) : row[col.field])}
-                                    </TableCell>
-                                ))}
-                                <TableCell
-                                    align="right"
-                                    sx={{
-                                        borderBottom: '1px solid rgba(224, 224, 224, 1)'
-                                    }}
-                                >
-                                    <Tooltip title="Ver">
-                                        <IconButton
-                                            size="small"
-                                            onClick={() => onView && onView(row)}
-                                            sx={{
-                                                color: '#666',
-                                                '&:hover': { color: '#333' }
-                                            }}
-                                        >
-                                            <Visibility />
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Tooltip title="Editar">
-                                        <IconButton
-                                            size="small"
-                                            onClick={() => onEdit && onEdit(row)}
-                                            sx={{
-                                                color: '#666',
-                                                '&:hover': { color: '#333' }
-                                            }}
-                                        >
-                                            <Edit />
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Tooltip title="Eliminar">
-                                        <IconButton
-                                            size="small"
-                                            onClick={() => onDelete && onDelete(row)}
-                                            sx={{
-                                                color: '#ff4444',
-                                                '&:hover': { color: '#cc0000' }
-                                            }}
-                                        >
-                                            <Delete />
-                                        </IconButton>
-                                    </Tooltip>
-                                </TableCell>
-                            </TableRow>
-                        ))}
+        // Usamos un Box para darle un ancho completo y permitir estilos
+        <Box sx={{ width: '100%', ...sx }}>
+            <DataGrid
+                // --- Props Esenciales ---
+                rows={rows}
+                columns={columns}
 
-                        {emptyRows > 0 && (
-                            <TableRow style={{ height: 53 * emptyRows }}>
-                                <TableCell colSpan={columns.length + 1} />
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                component="div"
-                count={data.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                rowsPerPageOptions={pageSizeOptions}
-                sx={{
-                    '.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows': {
-                        color: '#666'
+                // --- Configuración Común ---
+                // Esto le dice al grid que se ajuste automáticamente a la altura de su contenido.
+                autoHeight
+
+                // --- Paginación ---
+                // Define los tamaños de página disponibles
+                pageSizeOptions={[5, 10, 25]}
+                initialState={{
+                    pagination: {
+                        // Fija el tamaño de página inicial
+                        paginationModel: {
+                            pageSize: 10,
+                        },
                     },
-                    '.MuiTablePagination-select': {
-                        color: '#333'
-                    },
-                    '.MuiTablePagination-actions': {
-                        '& button': {
-                            color: '#666',
-                            '&:hover': {
-                                color: '#333'
-                            },
-                            '&.Mui-disabled': {
-                                color: '#ccc'
-                            }
-                        }
-                    }
                 }}
+
+                // --- Identificador de Fila ---
+                // Le decimos al grid que use el campo 'id' de tus datos como clave única.
+                // Esto es VITAL si tu campo no se llama 'id' (ej: '_id', 'uuid')
+                // En tu caso, ya lo llamamos 'id' en las columnas, así que esto es lo correcto.
+                getRowId={(row) => row.id}
+
+                // --- Otras Props Útiles ---
+                // Deshabilita la selección de fila al hacer clic
+                disableRowSelectionOnClick
+
+                // Pasa cualquier otra prop (como 'checkboxSelection')
+                {...dataGridProps}
             />
-        </Paper>
-    )
-}
+        </Box>
+    );
+};
+
+export default DataTable;

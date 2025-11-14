@@ -1,77 +1,87 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import { loginClient as loginClientService, loginAdmin as loginAdminService } from '../services/authService';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import * as authService from '../services/authService'; // Importa todos los exports
 
+// 1. Crear el Contexto
 const AuthContext = createContext(null);
 
-export function useAuth() {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error('useAuth must be used within AuthProvider');
-    }
-    return context;
-}
-
-export default function AuthProvider({ children }) {
+// 2. Crear el Proveedor (Provider)
+export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [token, setToken] = useState(null);
+    const [token, setToken] = useState(() => localStorage.getItem('token'));
     const [loading, setLoading] = useState(true);
 
+    // Cargar usuario desde localStorage al iniciar
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        const storedToken = localStorage.getItem('token');
-        if (storedUser && storedToken) {
-            setUser(JSON.parse(storedUser));
-            setToken(storedToken);
+        const userJson = localStorage.getItem('user');
+        if (userJson) {
+            setUser(JSON.parse(userJson));
         }
         setLoading(false);
     }, []);
 
-    const loginClient = async (credentials) => {
-        const data = await loginClientService(credentials);
-        if (data.token && data.usuario) {
-            const userData = {
-                id: data.usuario.id,
-                nombre: data.usuario.nombre,
-                apellido: data.usuario.apellido,
-                correo: data.usuario.correo,
-                rol: data.usuario.rol,
-            };
-            localStorage.setItem('user', JSON.stringify(userData));
-            localStorage.setItem('token', data.token);
-            setUser(userData);
-            setToken(data.token);
-        }
-        return data;
-    };
+    // --- NUEVA FUNCIÓN DE LOGIN UNIFICADA ---
+    const login = async (credentials) => {
+        try {
+            // 1. Llamamos a la ÚNICA función del servicio
+            const response = await authService.login(credentials);
 
-    const loginAdmin = async (credentials) => {
-        const data = await loginAdminService(credentials);
-        if (data.token && data.usuario) {
-            const userData = {
-                id: data.usuario.id,
-                nombre: data.usuario.nombre,
-                apellido: data.usuario.apellido,
-                correo: data.usuario.correo,
-                rol: data.usuario.rol,
-            };
-            localStorage.setItem('user', JSON.stringify(userData));
-            localStorage.setItem('token', data.token);
-            setUser(userData);
-            setToken(data.token);
+            // 2. Si la API devuelve el token y el usuario...
+            if (response.token && response.usuario) {
+
+                // 3. Normalizamos el 'rol' para que el resto de la app (como routeService)
+                //    pueda leer 'role' (inglés) de forma consistente.
+                const userToSave = {
+                    ...response.usuario,
+                    role: response.usuario.rol // Creamos 'role' a partir de 'rol'
+                };
+
+                // 4. Guardamos todo en localStorage y en el estado
+                localStorage.setItem('token', response.token);
+                localStorage.setItem('user', JSON.stringify(userToSave));
+                setToken(response.token);
+                setUser(userToSave);
+
+                // 5. Devolvemos la respuesta completa al componente Login
+                return response;
+            }
+            return response;
+        } catch (error) {
+            console.error("Error en login (AuthProvider):", error);
+            throw error; // Lanzamos el error para que Login.jsx lo atrape
         }
-        return data;
     };
 
     const logout = () => {
-        localStorage.removeItem('user');
         localStorage.removeItem('token');
-        setUser(null);
+        localStorage.removeItem('user');
         setToken(null);
+        setUser(null);
+        // Opcional: redirigir al login
+        // window.location.href = '/login';
+    };
+
+    // 3. Valor que se pasa a los componentes hijos
+    const value = {
+        user,
+        token,
+        isAuthenticated: !!token,
+        login, // <-- La nueva función
+        logout
+        // Ya no existen loginAdmin ni loginClient
     };
 
     return (
-        <AuthContext.Provider value={{ user, token, loginClient, loginAdmin, logout, loading }}>
+        <AuthContext.Provider value={value}>
             {!loading && children}
         </AuthContext.Provider>
     );
-}
+};
+
+// 4. Hook personalizado para consumir el contexto
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error('useAuth debe ser usado dentro de un AuthProvider');
+    }
+    return context;
+};

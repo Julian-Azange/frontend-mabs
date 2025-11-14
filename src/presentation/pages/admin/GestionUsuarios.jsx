@@ -1,75 +1,127 @@
-import { Container, Box, Typography, Button, Stack, TextField, CircularProgress } from '@mui/material'
-import { useMemo, useState } from 'react'
-import DataTable from '../../components/admin/DataTable'
-import Modal from '../../components/common/Modal'
-import { useUsers } from '../../../app/hooks/useUsers'
+import React, { useState } from 'react';
+import { Box, Button, Typography, CircularProgress, IconButton } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function GestionUsuarios() {
-    const { users, loading, error, refetch } = useUsers()
-    const [open, setOpen] = useState(false)
-    const [selected, setSelected] = useState(null)
-    const [query, setQuery] = useState('')
+// 1. Importamos el hook y AMBOS modales
+import { useUsers } from '../../../app/hooks/useUsers';
+import { UserFormModal } from '../../components/admin/UserFormModal';
+import { UserEditModal } from '../../components/admin/UserEditModal'; // <-- Nuevo modal
+import { DataTable } from '../../components/admin/DataTable';
 
-    const columns = useMemo(() => [
-        // El endpoint de listar no devuelve el ID, usamos el correo como key.
-        { field: 'correo', headerName: 'Email', minWidth: 220 },
-        { field: 'rol.rol', headerName: 'Rol', minWidth: 120, valueGetter: (params) => params.row.rol.rol },
-        { field: 'estado', headerName: 'Estado', minWidth: 120, valueGetter: (params) => params.row.estado ? 'Activo' : 'Inactivo' },
-        { field: 'verificado', headerName: 'Verificado', minWidth: 120, valueGetter: (params) => params.row.verificado ? 'Sí' : 'No' },
-    ], [])
+export const GestionUsuarios = () => {
+    // 2. Destructuramos TODAS las funciones y estados del hook
+    const {
+        users,
+        loadingList,
+        errorList,
+        isSubmitting,
+        submitError,
+        createUser,
+        isUpdating,
+        updateError,
+        updateUser,
+        isDeleting,
+        deleteError,
+        deleteUser
+    } = useUsers();
 
-    const filtered = users.filter(u => u.correo.toLowerCase().includes(query.toLowerCase()))
+    // 3. Estados locales para los modales
+    const [createModalOpen, setCreateModalOpen] = useState(false);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [currentUser, setCurrentUser] = useState(null); // Para saber a quién editar
 
-    const handleView = (row) => { setSelected(row); setOpen(true) }
-    const handleEdit = (row) => { setSelected(row); setOpen(true) }
-    const handleDelete = (row) => {
-        // Se necesita el ID para eliminar, pero no viene en la respuesta.
-        // Se debería usar el servicio de inactivación aquí.
-        if (!confirm(`Inactivar usuario ${row.correo}?`)) return
-        console.log("Inactivar usuario", row.correo)
-    }
+    // --- Manejadores de Acciones ---
+    const handleEditClick = (id) => {
+        const userToEdit = users.find(user => user.id === id);
+        setCurrentUser(userToEdit);
+        setEditModalOpen(true);
+    };
 
-    const handleClose = () => { setSelected(null); setOpen(false) }
+    const handleDeleteClick = async (id) => {
+        // Pedimos confirmación
+        if (window.confirm('¿Estás seguro de que deseas desactivar este usuario?')) {
+            try {
+                await deleteUser(id);
+                // (Opcional: mostrar un toast de éxito)
+            } catch (error) {
+                // (Opcional: mostrar un toast de error)
+                console.error("Error al desactivar:", error);
+            }
+        }
+    };
 
-    if (loading) {
-        return <Container maxWidth="xl" sx={{ mt: 4, mb: 4, display: 'flex', justifyContent: 'center' }}><CircularProgress /></Container>
-    }
+    // --- Definición de Columnas (con 'isDeleting' en el botón) ---
+    const columns = [
+        { field: 'id', headerName: 'ID', width: 250 },
+        { field: 'correo', headerName: 'Correo', width: 300 },
+        { field: 'rol', headerName: 'Rol', width: 150 },
+        { /* ... Columna de Estado ... */ },
+        {
+            field: 'actions',
+            headerName: 'Acciones',
+            type: 'actions',
+            width: 120,
+            renderCell: (params) => (
+                <Box>
+                    <IconButton
+                        onClick={() => handleEditClick(params.id)}
+                        color="primary"
+                    >
+                        <EditIcon />
+                    </IconButton>
+                    <IconButton
+                        onClick={() => handleDeleteClick(params.id)}
+                        color="error"
+                        disabled={isDeleting} // Deshabilitar si se está borrando algo
+                    >
+                        <DeleteIcon />
+                    </IconButton>
+                </Box>
+            )
+        }
+    ];
 
-    if (error) {
-        return <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}><Typography color="error">Error al cargar los usuarios.</Typography></Container>
-    }
+    // --- Renderizado ---
+    if (loadingList) return <CircularProgress />;
+    if (errorList) return <Typography color="error">Error: {errorList.message}</Typography>;
 
     return (
-        <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
-            <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, mb: 3 }}>
-                Gestión de Usuarios
-            </Typography>
-        <Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                <Stack direction="row" spacing={2} alignItems="center">
-                    <TextField size="small" placeholder="Buscar usuario..." value={query} onChange={(e) => setQuery(e.target.value)} />
-                    <Button variant="contained" onClick={() => setOpen(true)}>Crear Usuario</Button>
-                </Stack>
+        <Box sx={{ p: 3, width: '100%' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h4">Gestión de Usuarios</Typography>
+                <Button
+                    variant="contained"
+                    startIcon={<AddIcon />}
+                    onClick={() => setCreateModalOpen(true)} // Abre el modal de CREAR
+                >
+                    Crear Usuario
+                </Button>
             </Box>
 
-            <DataTable
-                columns={columns}
-                data={filtered}
-                initialPageSize={5}
-                onView={handleView}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                getRowId={(row) => row.correo} // Usamos el correo como ID para la tabla
+            <DataTable rows={users} columns={columns} />
+
+            {/* Modal de CREACIÓN */}
+            <UserFormModal
+                open={createModalOpen}
+                onClose={() => setCreateModalOpen(false)}
+                onSubmit={createUser}
+                isSubmitting={isSubmitting}
+                submitError={submitError}
             />
 
-            <Modal open={open} title={selected ? 'Ver / Editar Usuario' : 'Crear Usuario'} onClose={handleClose}>
-                <Stack spacing={2} sx={{ mt: 1 }}>
-                    <TextField label="Email" defaultValue={selected?.correo || ''} />
-                    <TextField label="Rol" defaultValue={selected?.rol?.rol || 'CLIENTE'} />
-                </Stack>
-            </Modal>
+            {/* Modal de EDICIÓN */}
+            <UserEditModal
+                open={editModalOpen}
+                onClose={() => setEditModalOpen(false)}
+                user={currentUser} // Pasamos el usuario seleccionado
+                onSubmit={updateUser} // Pasamos la función de actualizar
+                isUpdating={isUpdating}
+                updateError={updateError}
+            />
         </Box>
-    </Container>
-    )
-}
+    );
+};
 
+export default GestionUsuarios;

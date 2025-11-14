@@ -1,7 +1,7 @@
 import { BrowserRouter } from 'react-router-dom'
 import LayoutRoutes from './app/router/LayoutRoutes'
 import ThemeProvider from './app/providers/ThemeProvider'
-import AuthProvider from './app/providers/AuthProvider'
+import { AuthProvider } from './app/providers/AuthProvider'
 import CartProvider from './app/providers/CartProvider'
 import { MembershipProvider } from './app/providers/MembershipProvider'
 import { ToastContainer } from 'react-toastify'

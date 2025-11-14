@@ -1,4 +1,4 @@
-import API_BASE_URL from './api';
+import { apiFetch } from './api';
 
 /**
  * Processes the membership payment through Wompi.
@@ -13,20 +13,14 @@ import API_BASE_URL from './api';
  * @returns {Promise<{ wompiRedirectUrl: string }>} The response from the server containing the Wompi URL.
  */
 export const processMembershipPayment = async (paymentData, token) => {
-    const response = await fetch(`${API_BASE_URL}/pagos/crear-transaccion-wompi`, {
+    const data = await apiFetch('/pagos/crear-transaccion-wompi', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(paymentData)
+        body: paymentData,
     });
-
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: 'Error al procesar el pago con Wompi' }));
-        throw new Error(errorData.message || 'Error al procesar el pago con Wompi');
-    }
-    return await response.json();
+    return data;
 };
 
 /**
@@ -52,20 +46,14 @@ export const redirectToWompi = (wompiRedirectUrl) => {
  * @returns {Promise<any>} The response from the server.
  */
 export const createMembershipParametrization = async (parametrizationData, metasploitToken) => {
-    const response = await fetch(`${API_BASE_URL}/membresia/seguridad/crear/parametrizacion/membresia`, {
+    const data = await apiFetch('/membresia/seguridad/crear/parametrizacion/membresia', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
             'metasploit': metasploitToken,
         },
-        body: JSON.stringify(parametrizationData)
+        body: parametrizationData,
     });
-
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: 'Error al crear la parametrización de membresía' }));
-        throw new Error(errorData.message || 'Error al crear la parametrización de membresía');
-    }
-    return await response.json();
+    return data;
 };
 
 /**

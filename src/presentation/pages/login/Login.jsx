@@ -16,7 +16,7 @@ const loginSchema = z.object({
 
 export default function Login() {
     const navigate = useNavigate();
-    const { loginClient, loginAdmin } = useAuth();
+    const { login } = useAuth();
     const { control, handleSubmit, setError, formState: { errors } } = useForm({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -26,47 +26,34 @@ export default function Login() {
     });
 
     const onSubmit = async (data) => {
-        console.log('Formulario enviado con datos:', data);
-
-        // Intentar iniciar sesión como administrador/desarrollador primero
         try {
-            const adminResponse = await loginAdmin(data);
-            if (adminResponse && adminResponse.token && adminResponse.usuario) {
-                const userRole = adminResponse.usuario.rol; // Acceder al rol dentro del objeto usuario
+            // 1. Llama a la ÚNICA función de login
+            const response = await login(data);
+
+            // 2. Verifica que la respuesta sea exitosa
+            if (response && response.token && response.usuario) {
+                const userRole = response.usuario.rol; // Leemos el 'rol'
+
+                // 3. El frontend decide a dónde redirigir
                 if (userRole === 'ADMIN' || userRole === 'DESARROLLADOR') {
                     navigate('/admin/dashboard');
                 } else {
-                    // Si el rol no es ADMIN o DESARROLLADOR, redirigir a la página principal o a otra ruta
-                    navigate('/');
+                    navigate('/'); // Redirige a la página principal para Clientes
                 }
-                return;
+                return; // ¡Importante! Salimos de la función
             }
-        } catch (adminError) {
-            console.error("Error al intentar login de admin/desarrollador:", adminError.message);
-            // No hacemos nada aquí, simplemente dejamos que el flujo continúe para intentar como cliente
+        } catch (error) {
+            // 4. Si el 'try' falla (login incorrecto, 400, 403, 500)
+            console.error("Error al intentar login:", error.message);
+            setError('correo', {
+                type: 'manual',
+                message: error.message || 'Credenciales incorrectas o usuario inactivo.'
+            });
+            setError('password', {
+                type: 'manual',
+                message: ' '
+            });
         }
-
-        // Si falla el login de admin/desarrollador, intentar como cliente
-        try {
-            const clientResponse = await loginClient(data);
-            if (clientResponse && clientResponse.token && clientResponse.usuario) {
-                navigate('/'); // Redirige a la página principal para clientes
-                return;
-            }
-        } catch (clientError) {
-            console.error("Error al intentar login de cliente:", clientError.message);
-            // Manejo de errores específicos para el cliente si es necesario
-        }
-
-        // Si ambos fallan, mostrar un error general
-        setError('correo', {
-            type: 'manual',
-            message: 'Credenciales incorrectas o usuario inactivo.'
-        });
-        setError('password', {
-            type: 'manual',
-            message: ' '
-        });
     };
 
     return (
