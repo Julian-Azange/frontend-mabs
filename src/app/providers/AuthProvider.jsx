@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
 
             // 2. Si la API devuelve el token y el usuario...
             if (response.token && response.usuario) {
-
+                
                 // 3. Normalizamos el 'rol' para que el resto de la app (como routeService)
                 //    pueda leer 'role' (inglés) de forma consistente.
                 const userToSave = {
