@@ -34,7 +34,7 @@ export const GestionUsuarios = () => {
 
     // --- Manejadores de Acciones ---
     const handleEditClick = (id) => {
-        const userToEdit = users.find(user => user.id === id);
+        const userToEdit = users.find(user => user._id === id);
         setCurrentUser(userToEdit);
         setEditModalOpen(true);
     };
@@ -54,10 +54,65 @@ export const GestionUsuarios = () => {
 
     // --- Definición de Columnas (con 'isDeleting' en el botón) ---
     const columns = [
-        { field: 'id', headerName: 'ID', width: 250 },
+        { field: '_id', headerName: 'ID', width: 250 },
         { field: 'correo', headerName: 'Correo', width: 300 },
-        { field: 'rol', headerName: 'Rol', width: 150 },
-        { /* ... Columna de Estado ... */ },
+        {
+            field: 'rol',
+            headerName: 'Rol',
+            width: 150,
+            valueGetter: (value) => {
+                return value.rol;
+            }
+        },
+        {
+            field: 'estado',
+            headerName: 'Estado',
+            width: 130,
+            renderCell: (params) => (
+                // 'params.value' aquí es 'true' o 'false'
+                <Typography
+                    color={params.value ? 'success.main' : 'error.main'}
+                    sx={{ fontWeight: 'bold' }}
+                >
+                    {params.value ? 'Activo' : 'Inactivo'}
+                </Typography>
+            )
+        },
+        {
+            field: 'cantidadPagadas',
+            headerName: 'Pagos',
+            type: 'number', // Ayuda a la tabla a ordenar por número
+            width: 100,
+            align: 'center',
+            headerAlign: 'center',
+            renderCell: (params) => (
+                <Typography
+                    color={params.value > 0 ? 'primary.main' : 'text.secondary'}
+                    sx={{ fontWeight: params.value > 0 ? 'bold' : 'normal' }}
+                >
+                    {params.value}
+                </Typography>
+            )
+        },
+        {
+            field: 'verificado',
+            headerName: 'Verificado',
+            width: 120,
+            renderCell: (params) => (
+                <Typography color={params.value ? 'success.main' : 'text.secondary'}>
+                    {params.value ? 'Sí' : 'No'}
+                </Typography>
+            )
+        },
+        {
+            field: 'tiempoSesion',
+            headerName: 'Última Sesión',
+            width: 200,
+            valueGetter: (value) => {
+                // 'value' es el string de la fecha, ej: "2025-11-12T04:01:45.011Z"
+                return new Date(value).toLocaleString('es-CO'); // Formato local
+            }
+        },
         {
             field: 'actions',
             headerName: 'Acciones',
@@ -100,7 +155,7 @@ export const GestionUsuarios = () => {
                 </Button>
             </Box>
 
-            <DataTable rows={users} columns={columns} />
+            <DataTable rows={users} columns={columns} getRowId={(row) => row._id} />
 
             {/* Modal de CREACIÓN */}
             <UserFormModal
