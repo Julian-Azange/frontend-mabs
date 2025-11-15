@@ -14,7 +14,7 @@ export default function AdminLayout() {
     const theme = useTheme()
     const { mode, toggleMode } = useThemeMode()
 
-    if (!user || user.role !== 'admin') {
+    if (!user || (user.role !== 'ADMIN' && user.role !== 'DESARROLLADOR')) {
         navigate('/')
         return null
     }

@@ -5,11 +5,13 @@ export default defineConfig({
   plugins: [
     react()
   ],
-  proxy: {
-    '/api': {
-      target: 'https://server-mabs-xo9s.onrender.com',
-      changeOrigin: true,
-      secure: false,
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://server-mabs-xo9s.onrender.com',
+        changeOrigin: true,
+        secure: false,
+      }
     }
   }
 })

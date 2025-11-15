@@ -1,12 +1,16 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../providers/AuthProvider';
 
 export const PrivateRoute = ({ children }) => {
-    const { user } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+  const location = useLocation();
 
-    if (!user) {
-        return <Navigate to="/login" />;
-    }
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+  if (user.role !== 'ADMIN' && user.role !== 'DESARROLLADOR') {
+    return <Navigate to="/" replace />;
+  }
 
-    return children;
+  return children;
 };
