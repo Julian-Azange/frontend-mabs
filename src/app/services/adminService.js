@@ -15,7 +15,7 @@ export const registerAdmin = async (adminData) => {
 };
 
 export const updateUser = async (userId, userData) => {
-    return apiFetch(`/seguridad/pruebas/actualizar/registro/${userId}`, {
+    return apiFetch(`/api/seguridad/pruebas/actualizar/registro/${userId}`, {
         method: 'PUT',
         body: userData
     });
