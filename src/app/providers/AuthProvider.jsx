@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import * as authService from '../services/authService'; // Importa todos los exports
+import { desconectadoUsu } from '../../socket/conectarSocket';
 
 // 1. Crear el Contexto
 const AuthContext = createContext(null);
@@ -27,7 +28,7 @@ export const AuthProvider = ({ children }) => {
 
             // 2. Si la API devuelve el token y el usuario...
             if (response.token && response.usuario) {
-                
+
                 // 3. Normalizamos el 'rol' para que el resto de la app (como routeService)
                 //    pueda leer 'role' (inglés) de forma consistente.
                 const userToSave = {
@@ -52,12 +53,17 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        setToken(null);
-        setUser(null);
-        // Opcional: redirigir al login
-        // window.location.href = '/login';
+        try {
+
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            desconectadoUsu();
+            setToken(null);
+            setUser(null);
+        } catch (error) {
+            console.error("Error durante logout:", error);
+            throw error; // <-- Esto es lo que dispara tu toast rojo
+        }
     };
 
     // 3. Valor que se pasa a los componentes hijos
