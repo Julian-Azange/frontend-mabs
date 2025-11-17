@@ -149,7 +149,6 @@ export default function AdminNavbar({ mobileOpen, setMobileOpen }) {
                         </Typography>
                     </Box>
 
-                    {/* Menú Desplegable MUI */}
                     <Menu
                         anchorEl={anchorEl}
                         open={open}
@@ -158,16 +157,40 @@ export default function AdminNavbar({ mobileOpen, setMobileOpen }) {
                         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                         MenuListProps={{ sx: { minWidth: 180, p: 0.5 } }}
-                        PaperProps={{ sx: { borderRadius: 2, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' } }}
+                        PaperProps={{ sx: { borderRadius: 1, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' } }}
                     >
-                        <MenuItem onClick={handleViewProfile}>
-                            <Person sx={{ mr: 1, color: '#636e72' }} /> Ver Perfil
+                        <MenuItem
+                            onClick={handleViewProfile}
+                            sx={{
+                                fontSize: '0.9rem',
+                            }}
+                        >
+                            <Person
+                                sx={{
+                                    mr: 1,
+                                    color: '#636e72',
+                                    fontSize: '1.15rem'
+                                }}
+                            />
+                            Ver Perfil
                         </MenuItem>
 
                         <Divider />
 
-                        <MenuItem onClick={handleLogout} sx={{ color: 'error.main' }}>
-                            <Logout sx={{ mr: 1 }} /> Cerrar Sesión
+                        <MenuItem
+                            onClick={handleLogout}
+                            sx={{
+                                color: 'error.main',
+                                fontSize: '0.9rem'
+                            }}
+                        >
+                            <Logout
+                                sx={{
+                                    mr: 1,
+                                    fontSize: '1.15rem'
+                                }}
+                            />
+                            Cerrar Sesión
                         </MenuItem>
                     </Menu>
 
