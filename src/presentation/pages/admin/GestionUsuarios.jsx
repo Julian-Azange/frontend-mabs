@@ -1,8 +1,8 @@
 // src/presentation/pages/admin/GestionUsuarios.jsx
 import React, { useState } from 'react';
-import { 
-    Box, Button, Typography, CircularProgress, IconButton, 
-    Dialog, DialogTitle, DialogContent, DialogActions, Alert 
+import {
+    Box, Button, Typography, CircularProgress, IconButton,
+    Dialog, DialogTitle, DialogContent, DialogActions, Alert
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -51,7 +51,7 @@ export const GestionUsuarios = () => {
 
     const handlePerformDelete = async () => {
         if (!userToDeleteId) return;
-        setOpenConfirmDialog(false); 
+        setOpenConfirmDialog(false);
         try {
             await deleteUser(userToDeleteId);
             // Aquí se mostraría un Snackbar de éxito
@@ -65,10 +65,10 @@ export const GestionUsuarios = () => {
     // --- Definición de Columnas (Estilos Minimalistas y Funcionalidad) ---
     const columns = [
         // 1. ID DE REFERENCIA (Compacto)
-        { 
-            field: '_id', 
-            headerName: 'ID Ref.', 
-            minWidth: 100, 
+        {
+            field: '_id',
+            headerName: 'ID Ref.',
+            minWidth: 100,
             flex: 1,
             // Utilizamos renderCell para mostrar solo una parte del ID largo
             renderCell: (params) => (
@@ -77,12 +77,13 @@ export const GestionUsuarios = () => {
                 </Typography>
             )
         },
-        
+
         // 2. CORREO
         {
             field: 'correo', headerName: 'Correo', minWidth: 180,
-            maxWidth: 260, flex: 1 },
-        
+            maxWidth: 260, flex: 1
+        },
+
         // 3. ESTADO (Badge de color)
         {
             field: 'estado',
@@ -143,26 +144,26 @@ export const GestionUsuarios = () => {
             }
         },
 
-        
+
         // 4. PAGOS (Alineado al centro)
         { field: 'cantidadPagadas', headerName: 'Pagos', type: 'number', minWidth: 80, flex: 0.7, align: 'center', headerAlign: 'center' },
-        
+
         // 5. VERIFICADO (Icono Azul)
-        { 
-            field: 'verificado', 
-            headerName: 'Verificado', 
-            minWidth: 100, 
+        {
+            field: 'verificado',
+            headerName: 'Verificado',
+            minWidth: 100,
             flex: 1,
             renderCell: (params) => {
                 const isVerified = params.value;
                 return isVerified ? (
                     <VerifiedIcon sx={{ color: 'rgba(66, 49, 255, 1)', fontSize: '1.2rem' }} />
                 ) : (
-                        <NewReleasesIcon sx={{ color: '#9da4ae', fontSize: '1.2rem' }} />
+                    <NewReleasesIcon sx={{ color: '#9da4ae', fontSize: '1.2rem' }} />
                 );
             }
         },
-        
+
         // 6. ÚLTIMA SESIÓN
         {
             field: 'tiempoSesion',
@@ -176,7 +177,7 @@ export const GestionUsuarios = () => {
                 return new Date(value).toLocaleString('es-CO'); // <--- ¡Falla si 'value' es null/undefined!
             }
         },
-        
+
         // 7. ACCIONES (Botones Personalizados)
         {
             field: 'actions',
@@ -191,20 +192,20 @@ export const GestionUsuarios = () => {
                     {/* Botón de Editar (Lápiz) */}
                     <IconButton
                         onClick={() => handleEditClick(params.id)}
-                        sx={{ color: PRIMARY_COLOR, '&:hover': { bgcolor: `${PRIMARY_COLOR}10` } }} 
+                        sx={{ color: PRIMARY_COLOR, '&:hover': { bgcolor: `${PRIMARY_COLOR}10` } }}
                         size="small"
                     >
                         <EditIcon fontSize="small" />
                     </IconButton>
                     {/* Botón de Eliminar/Desactivar (Papelera) */}
                     <IconButton
-                        onClick={() => confirmDelete(params.id)} 
+                        onClick={() => confirmDelete(params.id)}
                         color="error"
                         disabled={isDeleting}
                         size="small"
                     >
-                        {isDeleting && userToDeleteId === params.id ? 
-                            <CircularProgress size={16} color="inherit" /> 
+                        {isDeleting && userToDeleteId === params.id ?
+                            <CircularProgress size={16} color="inherit" />
                             : <DeleteIcon fontSize="small" />
                         }
                     </IconButton>
@@ -228,11 +229,11 @@ export const GestionUsuarios = () => {
                     variant="contained"
                     startIcon={<AddIcon />}
                     onClick={() => setCreateModalOpen(true)}
-                    sx={{ 
-                        bgcolor: PRIMARY_COLOR, 
-                        '&:hover': { bgcolor: '#A53460' }, 
-                        py: 1, 
-                        px: 2, 
+                    sx={{
+                        bgcolor: PRIMARY_COLOR,
+                        '&:hover': { bgcolor: '#A53460' },
+                        py: 1,
+                        px: 2,
                         borderRadius: 1, // Redondeo sutil
                         fontWeight: 600
                     }}
@@ -242,26 +243,26 @@ export const GestionUsuarios = () => {
             </Box>
 
             {errorList && <Alert severity="error" sx={{ mb: 2 }}>Error al cargar usuarios: {errorList.message}</Alert>}
-            
+
             {/* Contenedor de la Tabla con estilo limpio */}
-            <Box 
-                sx={{ 
+            <Box
+                sx={{
                     borderRadius: 1, // Redondeo sutil
-                    overflow: 'hidden', 
+                    overflow: 'auto', // Permite el scroll horizontal en móviles
                     border: '1px solid #e0e0e0',
                     width: '100%'
                 }}
             >
-                <DataTable 
-                    rows={users.map(u => ({...u, id: u._id}))} 
-                    columns={columns} 
-                    getRowId={(row) => row._id} 
+                <DataTable
+                    rows={users.map(u => ({ ...u, id: u._id }))}
+                    columns={columns}
+                    getRowId={(row) => row._id}
                 />
             </Box>
 
             {/* Diálogo de Confirmación Minimalista */}
-            <Dialog 
-                open={openConfirmDialog} 
+            <Dialog
+                open={openConfirmDialog}
                 onClose={() => setOpenConfirmDialog(false)}
                 maxWidth="xs"
                 PaperProps={{ sx: { borderRadius: 2, boxShadow: 10, p: 2, textAlign: 'center' } }}

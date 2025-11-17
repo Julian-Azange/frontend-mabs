@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useCallback } from 'react';
 import LoadingScreen from '../../presentation/components/common/LoadingScreen';
 
 const LoadingContext = createContext(null);
@@ -14,8 +14,8 @@ export function useLoading() {
 export default function LoadingProvider({ children }) {
     const [loading, setLoading] = useState(false);
 
-    const showLoading = () => setLoading(true);
-    const hideLoading = () => setLoading(false);
+    const showLoading = useCallback(() => setLoading(true), []);
+    const hideLoading = useCallback(() => setLoading(false), []);
 
     return (
         <LoadingContext.Provider value={{ showLoading, hideLoading }}>

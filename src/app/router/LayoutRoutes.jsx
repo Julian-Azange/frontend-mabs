@@ -1,7 +1,8 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../providers/AuthProvider'
 import { getAuthorizedRoutes } from '../services/routeService'
+import { useLoading } from '../providers/LoadingProvider'
 
 import PublicLayout from '../../presentation/layouts/PublicLayout'
 import AuthLayout from '../../presentation/layouts/AuthLayout'
@@ -46,6 +47,14 @@ const componentMap = {
 export default function LayoutRoutes() {
     const [authorizedRoutes, setAuthorizedRoutes] = useState(null)
     const { user } = useAuth()
+    const { showLoading, hideLoading } = useLoading()
+    const location = useLocation()
+
+    useEffect(() => {
+        showLoading()
+        const timer = setTimeout(() => hideLoading(), 500) // Simula tiempo de carga
+        return () => clearTimeout(timer)
+    }, [location.pathname]) // Dependencia únicamente de location.pathname
 
     useEffect(() => {
         const loadRoutes = async () => {
