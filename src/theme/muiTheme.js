@@ -39,7 +39,7 @@ export function createAppTheme(mode = 'light') {
             },
         },
         typography: {
-            fontFamily: 'Inter, sans-serif',
+            fontFamily: 'Poppins, sans-serif',
             h1: {
                 fontWeight: 700,
                 fontSize: '3rem',

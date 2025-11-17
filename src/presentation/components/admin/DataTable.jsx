@@ -1,50 +1,109 @@
+// src/presentation/components/admin/DataTable.jsx
 import React from 'react';
 import { Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { esES } from '@mui/x-data-grid/locales';
 
-/**
- * Componente reutilizable de DataGrid.
- * @param {Array} rows - Los datos que se mostrarán en las filas.
- * @param {Array} columns - La definición de las columnas.
- * @param {Object} [sx] - Estilos personalizados para el contenedor Box.
- * @param {Object} [dataGridProps] - Props adicionales para el componente DataGrid.
- */
+const PRIMARY_COLOR = "#C43670";
+const BORDER_COLOR = "#E6E6E6";
+
 export const DataTable = ({ rows, columns, sx, ...dataGridProps }) => {
+
+    // Altura mínima segura para mostrar el header y el footer si no hay datos
+    const MIN_HEIGHT = 200;
+
     return (
-        // Usamos un Box para darle un ancho completo y permitir estilos
-        <Box sx={{ width: '100%', ...sx }}>
+        <Box
+            sx={{
+                width: "100%",
+                // Eliminamos el cálculo de altura aquí. Dejamos que autoHeight gestione esto.
+                minHeight: MIN_HEIGHT,
+                bgcolor: "white",
+                borderRadius: 2,
+                overflow: "hidden",
+                border: `1px solid ${BORDER_COLOR}`,
+                ...sx,
+            }}
+        >
             <DataGrid
-                // --- Props Esenciales ---
                 rows={rows}
                 columns={columns}
 
-                // --- Configuración Común ---
-                // Esto le dice al grid que se ajuste automáticamente a la altura de su contenido.
+                // 💡 CLAVE: Usamos autoHeight para que la altura se ajuste al contenido
                 autoHeight
+                // Deshabilitamos el scroll interno del DataGrid (scrollableContainer)
+                disableVirtualization
 
-                // --- Paginación ---
-                // Define los tamaños de página disponibles
                 pageSizeOptions={[5, 10, 25]}
                 initialState={{
-                    pagination: {
-                        // Fija el tamaño de página inicial
-                        paginationModel: {
-                            pageSize: 10,
+                    pagination: { paginationModel: { pageSize: 10 } }
+                }}
+
+                sx={{
+                    border: "none",
+                    backgroundColor: "white",
+                    fontFamily: "Inter, Roboto, sans-serif",
+                    // Aseguramos que la tabla no tenga altura fija
+                    height: 'auto',
+
+                    /* ENCABEZADOS */
+                    "& .MuiDataGrid-columnHeaders": {
+                        backgroundColor: "#FAFAFA",
+                        borderBottom: `1px solid ${BORDER_COLOR}`,
+                        minHeight: "48px !important",
+                        lineHeight: "normal",
+                    },
+                    "& .MuiDataGrid-columnHeaderTitle": {
+                        fontWeight: 600,
+                        fontSize: "0.78rem",
+                        color: "#4A4A4A",
+                        letterSpacing: "0.3px",
+                    },
+                    "& .MuiDataGrid-columnSeparator": { display: "none" },
+
+                    /* FILAS */
+                    "& .MuiDataGrid-row": {
+                        minHeight: "58px !important",
+                        height: "58px !important",
+                        borderBottom: `1px solid ${BORDER_COLOR}`,
+                        transition: "background-color 0.2s ease-out",
+                        "&:hover": {
+                            backgroundColor: "#FBF7F9",
+                            cursor: "pointer",
                         },
+                        "&.Mui-selected": {
+                            backgroundColor: "#FCEBF3 !important",
+                        },
+                    },
+
+                    /* CELDAS (Alineación) */
+                    "& .MuiDataGrid-cell": {
+                        padding: "10px 18px",
+                        display: "flex",
+                        alignItems: "center",
+                        fontSize: "0.86rem",
+                        color: "#333",
+                        border: "none",
+                    },
+
+                    /* PAGINACIÓN */
+                    "& .MuiDataGrid-footerContainer": {
+                        borderTop: `1px solid ${BORDER_COLOR}`,
+                        backgroundColor: "#FAFAFA",
+                        height: "56px",
+                        minHeight: "56px",
+                    },
+                    "& .MuiTablePagination-root": {
+                        fontSize: "0.82rem",
                     },
                 }}
 
-                // --- Identificador de Fila ---
-                // Le decimos al grid que use el campo 'id' de tus datos como clave única.
-                // Esto es VITAL si tu campo no se llama 'id' (ej: '_id', 'uuid')
-                // En tu caso, ya lo llamamos 'id' en las columnas, así que esto es lo correcto.
-                getRowId={(row) => row.id}
-
-                // --- Otras Props Útiles ---
-                // Deshabilita la selección de fila al hacer clic
                 disableRowSelectionOnClick
+                disableColumnMenu
+                disableDensitySelector
+                disableSelectionOnClick
+                localeText={esES.components.MuiDataGrid.defaultProps.localeText}
 
-                // Pasa cualquier otra prop (como 'checkboxSelection')
                 {...dataGridProps}
             />
         </Box>
